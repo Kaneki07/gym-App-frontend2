@@ -1,0 +1,22 @@
+---
+// Footer.astro
+const currentYear = new Date().getFullYear();
+---
+<footer class="bg-black border-t border-gray-900 py-12">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+    <p class="text-gray-500 text-sm font-medium">
+      &copy; {currentYear} <span class="text-white">GymApp</span>. Todos los derechos reservados.
+    </p>
+
+    <div class="flex items-center gap-2">
+      <span class="text-gray-600 text-xs uppercase tracking-widest">Desarrollado por</span>
+      <a 
+        href="https://github.com/tu-usuario" 
+        target="_blank" 
+        class="text-red-600 font-black hover:text-red-500 transition-colors tracking-tighter italic"
+      >
+        HiruDev
+      </a>
+    </div>
+  </div>
+</footer>

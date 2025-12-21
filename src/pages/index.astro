@@ -1,0 +1,66 @@
+---
+// src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Inicio | Gym App">
+    <main class="max-w-6xl mx-auto px-4 py-16">
+        <section class="text-center py-24 bg-gray-900 rounded-[2rem] shadow-2xl border border-gray-800 relative overflow-hidden">
+            <div class="absolute -top-24 -left-24 w-64 h-64 bg-red-900/20 blur-[100px] rounded-full"></div>
+            
+            <div class="relative z-10">
+                <h1 class="text-6xl md:text-7xl font-black text-white mb-6 uppercase tracking-tighter italic">
+                    Desata tu <span class="text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]">Fuerza</span>
+                </h1>
+                
+                <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                    Entrena con rutinas de élite, monitorea cada repetición y alcanza tu máximo potencial físico con nuestra plataforma profesional.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a 
+                        href="/login" 
+                        class="px-10 py-5 bg-red-700 text-white text-xl font-black rounded-xl shadow-xl shadow-red-900/20
+                               hover:bg-red-600 transition-all duration-300 transform hover:scale-105 
+                               active:scale-95 uppercase tracking-widest"
+                    >
+                        Empezar ahora
+                    </a>
+                    <a 
+                        href="/register" 
+                        class="px-10 py-5 bg-transparent border-2 border-gray-700 text-white text-xl font-black rounded-xl
+                               hover:bg-gray-800 hover:border-gray-600 transition-all duration-300 uppercase tracking-widest"
+                    >
+                        Crear cuenta
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-16 grid md:grid-cols-3 gap-8">
+            <div class="p-8 bg-gray-900/50 rounded-2xl border border-gray-800 hover:border-red-900/50 transition-colors group">
+                <div class="w-12 h-12 bg-red-900/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-red-700 transition-colors">
+                    <span class="text-red-600 group-hover:text-white font-bold text-2xl">⚡</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-white uppercase tracking-tight">Rutinas Pro</h3>
+                <p class="text-gray-400 leading-relaxed">Planes de entrenamiento diseñados por atletas de alto rendimiento para cada objetivo.</p>
+            </div>
+
+            <div class="p-8 bg-gray-900/50 rounded-2xl border border-gray-800 hover:border-red-900/50 transition-colors group">
+                <div class="w-12 h-12 bg-red-900/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-red-700 transition-colors">
+                    <span class="text-red-600 group-hover:text-white font-bold text-2xl">📈</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-white uppercase tracking-tight">Seguimiento</h3>
+                <p class="text-gray-400 leading-relaxed">Gráficas detalladas de tu progreso físico y marcas personales en tiempo real.</p>
+            </div>
+
+            <div class="p-8 bg-gray-900/50 rounded-2xl border border-gray-800 hover:border-red-900/50 transition-colors group">
+                <div class="w-12 h-12 bg-red-900/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-red-700 transition-colors">
+                    <span class="text-red-600 group-hover:text-white font-bold text-2xl">🥗</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-white uppercase tracking-tight">Nutrición</h3>
+                <p class="text-gray-400 leading-relaxed">Calculadoras de macros y guías nutricionales para potenciar tu recuperación y crecimiento.</p>
+            </div>
+        </section>
+    </main>
+</Layout>

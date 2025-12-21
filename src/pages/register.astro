@@ -1,0 +1,35 @@
+---
+// src/pages/register.astro
+import Layout from '../layouts/Layout.astro';
+import RegisterForm from '../components/registerForm';
+---
+
+<Layout title="Únete a la Élite | Gym App">
+  <main class="min-h-screen flex items-center justify-center bg-black py-12 px-4">
+    
+    <div class="w-full max-w-5xl grid md:grid-cols-2 bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
+      
+      <div class="hidden md:flex flex-col justify-center p-12 bg-gradient-to-br from-gray-900 to-black border-r border-gray-800">
+        <h2 class="text-4xl lg:text-5xl font-black text-white leading-[1.1] uppercase mb-6 tracking-tighter">
+          Tu <span class="text-red-600 block">Transformación</span> comienza aquí.
+        </h2>
+        <ul class="space-y-4 text-gray-400">
+          <li class="flex items-center gap-3">
+            <span class="text-red-600 font-bold">✓</span> Rutinas de alta intensidad
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="text-red-600 font-bold">✓</span> Seguimiento en tiempo real
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="text-red-600 font-bold">✓</span> Comunidad de atletas
+          </li>
+        </ul>
+      </div>
+
+      <div class="p-8 md:p-12 flex flex-col justify-center items-center bg-gray-900 z-10">
+        <RegisterForm client:load />
+      </div>
+
+    </div>
+  </main>
+</Layout>

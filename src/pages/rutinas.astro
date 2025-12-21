@@ -1,0 +1,250 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Base de datos de ejercicios
+const ejerciciosPorMusculo = {
+  Pecho: ["Press de Banca", "Aperturas con mancuernas", "Flexiones", "Press inclinado"],
+  Espalda: ["Dominadas", "Remo con barra", "Jalón al pecho", "Peso muerto"],
+  Hombro: ["Press Militar", "Elevaciones laterales", "Pájaros", "Press Arnold"],
+  Bíceps: ["Curl de bíceps con barra", "Curl martillo", "Curl concentrado"],
+  Tríceps: ["Extensiones en polea", "Press francés", "Fondos de tríceps"],
+  Cuádriceps: ["Sentadillas", "Prensa de piernas", "Extensiones", "Zancadas"],
+  Isquios: ["Curl femoral", "Peso muerto rumano", "Buenos días"],
+  Pantorrillas: ["Elevación de talones sentado", "Elevación de talones de pie"]
+};
+
+const musculos = Object.keys(ejerciciosPorMusculo);
+---
+
+<Layout title="Mis Rutinas">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white">
+          Área de <span class="text-red-600">Entrenamiento</span>
+        </h1>
+        <p class="text-gray-500 font-bold uppercase tracking-widest text-sm mt-2" id="current-view-label">
+          Viendo: Rutina Semanal
+        </p>
+      </div>
+
+      <div class="relative inline-block text-left">
+        <button 
+          id="open-routine-menu"
+          class="bg-gray-900 hover:bg-red-600 text-white px-6 py-3 rounded-xl border border-gray-800 text-xs font-black uppercase tracking-widest transition-all flex items-center gap-3 shadow-xl"
+        >
+          ¿Qué deseas ver?
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div id="routine-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-black border border-gray-800 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
+          <button class="view-option w-full text-left px-5 py-4 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors border-b border-gray-900" data-view="Semanal">
+            📅 Rutina Semanal
+          </button>
+          <button class="view-option w-full text-left px-5 py-4 text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors" data-view="Musculo">
+            💪 Rutina por Músculo
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="content-semanal" class="routine-section space-y-20">
+      
+      <section>
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 border-b border-gray-900 pb-6 gap-4">
+            <div>
+                <span class="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Opción 01</span>
+                <h2 class="text-4xl font-black text-white uppercase italic tracking-tighter mt-3">Full Body <span class="text-gray-600">/ 2-3 Días</span></h2>
+            </div>
+            <p class="text-gray-500 text-[10px] font-bold uppercase max-w-xs md:text-right">Ideal para empezar. 1 día de descanso entre sesiones (L/M/V).</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-5 bg-gray-900/30 border border-gray-800 p-8 rounded-[2rem] hover:border-red-600 transition-all group relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 text-9xl font-black text-white/[0.02] italic group-hover:text-red-600/[0.05] transition-colors pointer-events-none"></div>
+                <h3 class="text-red-600 font-black text-xs uppercase tracking-[0.2em] mb-6 border-b border-gray-800 pb-2">Estructura de Sesión</h3>
+                <ul class="space-y-4 relative z-10">
+                    {[
+                        ["Piernas", "Sentadillas o Prensa"],
+                        ["Pecho", "Press de Banca"],
+                        ["Espalda", "Remo o Jalón"],
+                        ["Hombros", "Press Militar"],
+                        ["Brazos", "Bíceps + Tríceps (Opt)"],
+                        ["Core", "Plancha Abdominal"]
+                    ].map(([label, value]) => (
+                        <li class="flex justify-between items-center border-b border-gray-800/30 pb-2">
+                            <span class="text-gray-500 text-[9px] font-black uppercase tracking-tighter">{label}</span>
+                            <span class="text-white text-[11px] font-bold uppercase italic">{value}</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-gray-900 pb-6">
+            <span class="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Opción 02</span>
+            <h2 class="text-4xl font-black text-white uppercase italic tracking-tighter mt-3">Torso Pierna <span class="text-gray-600">/ 4 Días</span></h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { d: "Lunes", t: "Torso", e: "Fuerza", g: "Banca + Remo Pesado" },
+            { d: "Martes", t: "Pierna", e: "Fuerza", g: "Sentadilla + PMR" },
+            { d: "Jueves", t: "Torso", e: "Hipertrofia", g: "Inclinado + Jalón + Lat" },
+            { d: "Viernes", t: "Pierna", e: "Hipertrofia", g: "Prensa + Ext + Curl Fem" }
+          ].map((item) => (
+            <div class="bg-gray-900/20 border border-gray-800 p-6 rounded-2xl hover:bg-black hover:border-red-600 transition-all group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-gray-500 text-[9px] font-black uppercase">{item.d}</span>
+                    <span class="text-red-600 text-[8px] font-black uppercase tracking-widest border border-red-600/30 px-2 py-0.5 rounded">{item.e}</span>
+                </div>
+                <h4 class="text-white text-xl font-black uppercase italic">{item.t}</h4>
+                <div class="mt-4 pt-4 border-t border-gray-800 text-gray-400 text-[10px] font-bold uppercase leading-tight group-hover:text-white">
+                    {item.g}
+                </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-gray-900 pb-6">
+            <span class="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Opción 03</span>
+            <h2 class="text-4xl font-black text-white uppercase italic tracking-tighter mt-3">Híbrida PHAT <span class="text-gray-600">/ 5 Días</span></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+          {[
+            { d: "Lunes", t: "Torso Sup", e: "Fuerza" },
+            { d: "Martes", t: "Tren Inf", e: "Fuerza" },
+            { d: "Jueves", t: "Espalda/Hom", e: "Hipertrofia" },
+            { d: "Viernes", t: "Piernas", e: "Hipertrofia" },
+            { d: "Sábado", t: "Pecho/Brazos", e: "Hipertrofia" }
+          ].map((item) => (
+            <div class="bg-black border border-gray-800 p-5 rounded-xl hover:border-red-600 transition-all group">
+                <p class="text-red-600 text-[8px] font-black uppercase mb-1 tracking-tighter">{item.d}</p>
+                <h4 class="text-white text-xs font-black uppercase italic group-hover:text-red-600 transition-colors">{item.t}</h4>
+                <p class="text-gray-600 text-[9px] font-bold uppercase mt-2">{item.e}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-gray-900 pb-6">
+            <span class="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Opción 04</span>
+            <h2 class="text-4xl font-black text-white uppercase italic tracking-tighter mt-3">Push Pull Legs <span class="text-gray-600">/ 6 Días</span></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { t: "Push (Empuje)", d: "Lun + Jue", g: "Pecho, Hombros, Tríceps", id: "PUSH" },
+            { t: "Pull (Tracción)", d: "Mar + Vie", g: "Espalda, Bíceps, Antebrazo", id: "PULL" },
+            { t: "Legs (Pierna)", d: "Mié + Sáb", g: "Cuádriceps, Isquios, Gemelos", id: "LEGS" }
+          ].map((item) => (
+            <div class="group bg-gray-900/40 border border-gray-800 p-8 rounded-[2.5rem] hover:border-red-600 transition-all relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 text-7xl font-black text-white/[0.03] italic group-hover:text-red-600/10 transition-colors pointer-events-none uppercase">{item.id}</div>
+                <span class="text-red-600 font-black text-[10px] uppercase tracking-[0.2em] relative z-10">{item.d}</span>
+                <h4 class="text-3xl font-black text-white uppercase italic mt-2 relative z-10">{item.t}</h4>
+                <p class="text-gray-400 text-[11px] font-bold uppercase mt-6 relative z-10 leading-relaxed">
+                    Focalizado en: <br/>
+                    <span class="text-white group-hover:text-red-600 transition-colors">{item.g}</span>
+                </p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+
+    <div id="content-musculo" class="routine-section hidden">
+      <div class="relative mb-6">
+        <div class="flex overflow-x-auto gap-2 pb-2 no-scrollbar snap-x">
+          {musculos.map((m) => (
+            <button 
+              class="musculo-btn flex-none snap-start bg-gray-900/40 border border-gray-800 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase text-gray-500 hover:border-red-600 hover:text-white transition-all whitespace-nowrap tracking-wider" 
+              data-musculo={m}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+        <div class="absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black to-transparent pointer-events-none"></div>
+      </div>
+      
+      <div id="ejercicios-container" class="bg-gray-900/10 border border-gray-800 rounded-2xl min-h-[150px] flex items-center justify-center relative overflow-hidden transition-all">
+        <p id="placeholder-text" class="text-gray-700 font-black uppercase italic tracking-widest text-xs">Selecciona un grupo muscular para ver los ejercicios</p>
+        <div id="lista-ejercicios" class="hidden w-full p-6 z-10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-6 w-1 bg-red-600"></div>
+                <h2 id="musculo-titulo" class="text-xl font-black text-white uppercase italic tracking-tighter"></h2>
+            </div>
+            <div id="ejercicios-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script define:vars={{ ejerciciosPorMusculo }}>
+  const menuBtn = document.getElementById('open-routine-menu');
+  const dropdown = document.getElementById('routine-dropdown');
+  const viewOptions = document.querySelectorAll('.view-option');
+  const label = document.getElementById('current-view-label');
+  const placeholder = document.getElementById('placeholder-text');
+  
+  const sections = {
+    'Semanal': document.getElementById('content-semanal'),
+    'Musculo': document.getElementById('content-musculo')
+  };
+
+  menuBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown?.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => dropdown?.classList.add('hidden'));
+
+  viewOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      const view = opt.dataset.view;
+      label.textContent = `Viendo: Rutina ${view === 'Semanal' ? 'Semanal' : 'por Músculo'}`;
+      Object.keys(sections).forEach(key => {
+        sections[key].classList.toggle('hidden', key !== view);
+      });
+    });
+  });
+
+  const musculoBtns = document.querySelectorAll('.musculo-btn');
+  const listaCont = document.getElementById('lista-ejercicios');
+  const titulo = document.getElementById('musculo-titulo');
+  const grid = document.getElementById('ejercicios-grid');
+
+  musculoBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const musculo = btn.dataset.musculo;
+      const ejercicios = ejerciciosPorMusculo[musculo];
+      
+      placeholder?.classList.add('hidden');
+      listaCont.classList.remove('hidden');
+      titulo.textContent = musculo;
+      
+      grid.innerHTML = ejercicios.map(ej => `
+        <div class="bg-gray-900/50 border border-gray-800 p-4 rounded-xl flex items-center gap-3 text-white text-[11px] font-bold uppercase tracking-tight hover:border-red-600 transition-colors group">
+            <span class="w-1.5 h-1.5 bg-red-600 rounded-full group-hover:scale-150 transition-transform"></span>
+            ${ej}
+        </div>
+      `).join('');
+
+      musculoBtns.forEach(b => b.classList.remove('border-red-600', 'text-white'));
+      btn.classList.add('border-red-600', 'text-white');
+    });
+  });
+
+  if (!localStorage.getItem('token')) window.location.href = '/login';
+</script>
