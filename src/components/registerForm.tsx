@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'https://gym-app-backend-2-pv91.onrender.com',
     timeout: 8000 
 });
 
