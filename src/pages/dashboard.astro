@@ -2,25 +2,25 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Panel de Control">
+<Layout title="Panel de Control | Gym App">
   <div class="max-w-7xl mx-auto px-6 py-12">
     <header class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter">
-        Bienvenido, <span class="text-red-600" id="welcome-name">Atleta</span>
+      <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white italic">
+        Bienvenido, <span class="text-red-600 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]" id="welcome-name">Atleta</span>
       </h1>
       
-      <div class="mt-6 flex items-center gap-4">
+      <div class="mt-8 flex items-center gap-4">
         <div class="flex flex-col">
-            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] mb-1">Tu objetivo actual</span>
-            <div class="flex items-center gap-3">
-                <span id="current-status" class="text-white font-black uppercase italic tracking-tighter text-xl">
+            <span class="text-[10px] text-gray-500 font-black uppercase tracking-[0.3em] mb-2 ml-1">Tu objetivo actual</span>
+            <div class="flex items-center gap-4">
+                <span id="current-status" class="text-white font-black uppercase italic tracking-tighter text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">
                     Cargando...
                 </span>
                 
                 <div class="relative inline-block text-left" id="status-menu-container">
                     <button 
                         id="open-status-menu"
-                        class="bg-gray-900 hover:bg-red-600 text-gray-400 hover:text-white px-4 py-1.5 rounded-full border border-gray-800 text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2"
+                        class="bg-gray-900/50 hover:bg-red-600 text-gray-400 hover:text-white px-5 py-2 rounded-full border border-red-600/30 text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(220,38,38,0.1)] active:scale-95"
                     >
                         Cambiar estado
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -30,15 +30,15 @@ import Layout from '../layouts/Layout.astro';
 
                     <div 
                         id="status-dropdown" 
-                        class="hidden absolute left-0 mt-2 w-48 bg-black border border-gray-800 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl"
+                        class="hidden absolute left-0 mt-3 w-56 bg-black border border-red-600/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(220,38,38,0.2)] z-50 overflow-hidden backdrop-blur-xl"
                     >
-                        <button class="status-option w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors border-b border-gray-900" data-status="Mantenimiento">
+                        <button class="status-option w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors border-b border-gray-900" data-status="Mantenimiento">
                             Mantenimiento
                         </button>
-                        <button class="status-option w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors border-b border-gray-900" data-status="Fase de Definición">
+                        <button class="status-option w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors border-b border-gray-900" data-status="Fase de Definición">
                             Fase de Definición
                         </button>
-                        <button class="status-option w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors" data-status="Fase de Volumen">
+                        <button class="status-option w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors" data-status="Fase de Volumen">
                             Fase de Volumen
                         </button>
                     </div>
@@ -48,30 +48,41 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <a href="/rutinas" class="group bg-gray-900/30 border border-gray-800 p-8 rounded-3xl hover:border-red-600 transition-all hover:translate-y-[-5px]">
-        <div class="w-12 h-12 bg-red-600/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 transition-colors">
-            <span class="text-2xl">💪</span>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <a href="/rutinas" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
+        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
+            <span class="text-3xl group-hover:scale-110 transition-transform">💪</span>
         </div>
-        <h3 class="text-xl font-bold text-white mb-2 uppercase italic">Rutinas</h3>
-        <p class="text-gray-500 text-sm">Entrenamientos personalizados según tu nivel.</p>
+        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Rutinas</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Entrenamientos de élite diseñados para romper tus límites físicos.</p>
+        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+            Entrar ahora <span class="ml-2">→</span>
+        </div>
       </a>
 
-      <a href="/planes" class="group bg-gray-900/30 border border-gray-800 p-8 rounded-3xl hover:border-red-600 transition-all hover:translate-y-[-5px]">
-        <div class="w-12 h-12 bg-red-600/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 transition-colors">
-            <span class="text-2xl">🍎</span>
+      <a href="/planes" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
+        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
+            <span class="text-3xl group-hover:scale-110 transition-transform">🍎</span>
         </div>
-        <h3 class="text-xl font-bold text-white mb-2 uppercase italic">Alimentación</h3>
-        <p class="text-gray-500 text-sm">Planes nutricionales para ganar masa o definir.</p>
+        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Nutrición</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Combustible de precisión para maximizar tu recuperación muscular.</p>
+        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+            Ver dietas <span class="ml-2">→</span>
+        </div>
       </a>
 
-      <a href="/calculadora" class="group bg-gray-900/30 border border-gray-800 p-8 rounded-3xl hover:border-red-600 transition-all hover:translate-y-[-5px]">
-        <div class="w-12 h-12 bg-red-600/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 transition-colors">
-            <span class="text-2xl">📊</span>
+      <a href="/calculadora" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
+        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
+            <span class="text-3xl group-hover:scale-110 transition-transform">📊</span>
         </div>
-        <h3 class="text-xl font-bold text-white mb-2 uppercase italic">Calculadora</h3>
-        <p class="text-gray-500 text-sm">Porcentaje de grasa, masa muscular e IMC.</p>
+        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Biometría</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Monitorea tu porcentaje de grasa y evolución en tiempo real.</p>
+        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+            Analizar <span class="ml-2">→</span>
+        </div>
       </a>
+
     </div>
   </div>
 </Layout>
@@ -90,18 +101,15 @@ import Layout from '../layouts/Layout.astro';
   const dropdown = document.getElementById('status-dropdown');
   const options = document.querySelectorAll('.status-option');
 
-  // Abrir/Cerrar menú
   menuBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     dropdown?.classList.toggle('hidden');
   });
 
-  // Cerrar al hacer clic fuera
   document.addEventListener('click', () => {
     dropdown?.classList.add('hidden');
   });
 
-  // Guardar y Actualizar Estado
   function setStatus(newStatus: string) {
     if (statusDisplay) {
         statusDisplay.textContent = newStatus;
@@ -110,11 +118,9 @@ import Layout from '../layouts/Layout.astro';
     dropdown?.classList.add('hidden');
   }
 
-  // Inicializar estado guardado
   const savedStatus = localStorage.getItem(`status_${user.id}`) || 'Fase de Volumen';
   if (statusDisplay) statusDisplay.textContent = savedStatus;
 
-  // Asignar eventos a las opciones
   options.forEach(option => {
     option.addEventListener('click', () => {
         const val = (option as HTMLElement).dataset.status;

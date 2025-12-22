@@ -36,21 +36,24 @@ export default function RegisterForm() {
 
     return (
         <div className="w-full max-w-[440px] mx-auto px-2">
-            {/* Botón Volver - Optimizado para pulgar */}
             <div className="mb-8">
                 <a 
                     href="/" 
                     className="inline-flex items-center text-gray-500 hover:text-red-500 text-[10px] font-black uppercase tracking-[0.2em] transition-all group"
                 >
-                    <span className="mr-2 bg-gray-900 p-2 rounded-full group-hover:bg-red-600 group-hover:text-white transition-all">←</span> 
+                    <span className="mr-2 bg-gray-900 p-2 rounded-full group-hover:bg-red-600 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all">←</span> 
                     Volver al Inicio
                 </a>
             </div>
 
-            <form onSubmit={handleSubmit} className="w-full space-y-6 bg-gray-900/50 md:bg-black/40 p-6 sm:p-8 rounded-[2rem] border border-gray-800 shadow-2xl backdrop-blur-md">
+            {/* Formulario con borde LED y efecto elevado */}
+            <form 
+                onSubmit={handleSubmit} 
+                className="w-full space-y-6 bg-black/60 md:bg-black/40 p-6 sm:p-8 rounded-[2rem] border border-red-600/30 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(220,38,38,0.15)] backdrop-blur-md hover:shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(220,38,38,0.25)] transition-all duration-500"
+            >
                 <div className="text-center">
                     <h2 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tighter italic">
-                        Únete a la <span className="text-red-600">Élite</span>
+                        Únete a la <span className="text-red-600 drop-shadow-[0_0_8px_rgba(220,38,38,0.5)]">Élite</span>
                     </h2>
                     <p className="text-gray-500 text-[9px] uppercase tracking-[0.3em] font-bold mt-2">Crea tu perfil de atleta</p>
                 </div>
@@ -63,7 +66,7 @@ export default function RegisterForm() {
                             type="text"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full bg-black/50 border border-gray-800 rounded-2xl py-4 px-5 text-white focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-800"
+                            className="w-full bg-black/50 border border-gray-800 rounded-2xl py-4 px-5 text-white focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-800 shadow-inner"
                             placeholder="Ej. Marcus Vicius"
                             required
                             disabled={status.isLoading}
@@ -77,7 +80,7 @@ export default function RegisterForm() {
                             type="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full bg-black/50 border border-gray-800 rounded-2xl py-4 px-5 text-white focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-800"
+                            className="w-full bg-black/50 border border-gray-800 rounded-2xl py-4 px-5 text-white focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-800 shadow-inner"
                             placeholder="atleta@gym.com"
                             required
                             disabled={status.isLoading}
@@ -91,7 +94,7 @@ export default function RegisterForm() {
                             type="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full bg-black/50 border border-gray-800 rounded-2xl py-4 px-5 text-white focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-800"
+                            className="w-full bg-black/50 border border-gray-800 rounded-2xl py-4 px-5 text-white focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-800 shadow-inner"
                             placeholder="Mínimo 6 caracteres"
                             required
                             disabled={status.isLoading}
@@ -100,8 +103,8 @@ export default function RegisterForm() {
                 </div>
 
                 {status.message && (
-                    <div className={`p-4 rounded-xl text-[10px] text-center font-black uppercase tracking-widest animate-pulse ${
-                        status.isError ? 'bg-red-600/10 text-red-500 border border-red-600/20' : 'bg-green-600/10 text-green-500 border border-green-600/20'
+                    <div className={`p-4 rounded-xl text-[10px] text-center font-black uppercase tracking-widest animate-pulse border ${
+                        status.isError ? 'bg-red-600/10 text-red-500 border-red-600/20 shadow-[0_0_10px_rgba(220,38,38,0.1)]' : 'bg-green-600/10 text-green-500 border-green-600/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]'
                     }`}>
                         {status.message}
                     </div>
@@ -113,14 +116,14 @@ export default function RegisterForm() {
                     className={`w-full font-black py-5 rounded-2xl uppercase tracking-[0.2em] transition-all text-xs shadow-xl ${
                         status.isLoading 
                         ? 'bg-gray-800 text-gray-600 cursor-not-allowed' 
-                        : 'bg-red-600 text-white hover:bg-red-700 active:scale-[0.96] shadow-red-600/20'
+                        : 'bg-red-600 text-white hover:bg-red-700 active:scale-[0.96] shadow-[0_0_20px_rgba(220,38,38,0.4)]'
                     }`}
                 >
                     {status.isLoading ? 'Registrando...' : 'Empezar Transformación'}
                 </button>
 
                 <p className="text-center text-gray-600 text-[9px] font-bold uppercase tracking-widest">
-                    ¿Ya eres miembro? <a href="/login" className="text-white hover:text-red-600 transition-colors">Inicia Sesión</a>
+                    ¿Ya eres miembro? <a href="/login" className="text-white hover:text-red-600 transition-colors underline underline-offset-4 decoration-red-600/30">Inicia Sesión</a>
                 </p>
             </form>
         </div>
