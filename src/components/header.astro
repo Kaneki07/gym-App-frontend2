@@ -12,16 +12,16 @@
         Iniciar Sesión
       </a>
 
-      <div id="user-menu" class="hidden relative group">
-        <button class="flex items-center gap-3 bg-gray-900/50 px-4 py-2 rounded-full border border-gray-800 group-hover:border-red-600 transition-all">
+      <div id="user-menu" class="hidden relative">
+        <button id="menu-trigger" class="flex items-center gap-3 bg-gray-900/50 px-4 py-2 rounded-full border border-gray-800 hover:border-red-600 transition-all active:scale-95">
           <div class="w-7 h-7 bg-red-600 rounded-full flex items-center justify-center text-[10px] font-black text-white uppercase" id="user-initials">--</div>
           <span class="text-xs font-bold text-white uppercase tracking-tight" id="user-name-display">Cargando...</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         
-        <div class="absolute right-0 mt-2 w-56 bg-black border border-gray-800 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 overflow-hidden z-[100]">
+        <div id="dropdown-content" class="absolute right-0 mt-2 w-56 bg-black border border-gray-800 rounded-2xl shadow-2xl opacity-0 invisible transition-all duration-300 overflow-hidden z-[100]">
           <div class="p-4 bg-gray-900/20">
             <p class="text-[10px] text-gray-500 uppercase font-bold mb-1 tracking-widest">Atleta</p>
             <p class="text-xs text-white font-bold truncate" id="dropdown-email">---</p>
@@ -45,39 +45,66 @@
     
     const userMenu = document.getElementById('user-menu');
     const loginBtn = document.getElementById('login-btn');
-    const logoLink = document.getElementById('logo-link') as HTMLAnchorElement;
+    const logoLink = document.getElementById('logo-link');
 
-    // Lógica del Logo e Interfaz
     if (token && userString && userString !== 'undefined') {
-      const user = JSON.parse(userString);
-      
-      // Si hay sesión, el logo lleva al Dashboard
-      if (logoLink) logoLink.href = "/dashboard";
-      
-      userMenu?.classList.remove('hidden');
-      loginBtn?.classList.add('hidden');
-      
-      const nameDisplay = document.getElementById('user-name-display');
-      const initialsDisplay = document.getElementById('user-initials');
-      const dropdownEmail = document.getElementById('dropdown-email');
+      try {
+        const user = JSON.parse(userString);
+        if (logoLink) (logoLink as HTMLAnchorElement).href = "/dashboard";
+        
+        userMenu?.classList.remove('hidden');
+        loginBtn?.classList.add('hidden');
+        
+        const nameDisplay = document.getElementById('user-name-display');
+        const initialsDisplay = document.getElementById('user-initials');
+        const dropdownEmail = document.getElementById('dropdown-email');
 
-      if (nameDisplay) nameDisplay.textContent = user.name;
-      if (initialsDisplay) initialsDisplay.textContent = user.name.substring(0, 2).toUpperCase();
-      if (dropdownEmail) dropdownEmail.textContent = user.email;
+        if (nameDisplay) nameDisplay.textContent = user.name;
+        if (initialsDisplay) initialsDisplay.textContent = user.name.substring(0, 2).toUpperCase();
+        if (dropdownEmail) dropdownEmail.textContent = user.email;
+      } catch (e) {
+        console.error("Error al cargar datos de usuario");
+      }
     } else {
-      // Si NO hay sesión, el logo lleva al Index
-      if (logoLink) logoLink.href = "/";
-      
+      if (logoLink) (logoLink as HTMLAnchorElement).href = "/";
       userMenu?.classList.add('hidden');
       loginBtn?.classList.remove('hidden');
     }
   }
 
-  updateHeader();
+  // --- LÓGICA DE INTERACCIÓN (Móvil y PC) ---
+  const menuBtn = document.getElementById('menu-trigger');
+  const dropdown = document.getElementById('dropdown-content');
 
+  // Abrir/Cerrar al hacer clic o tocar
+  menuBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isHidden = dropdown?.classList.contains('invisible');
+    
+    if (isHidden) {
+      dropdown?.classList.remove('opacity-0', 'invisible');
+      dropdown?.classList.add('opacity-100', 'visible');
+    } else {
+      dropdown?.classList.add('opacity-0', 'invisible');
+      dropdown?.classList.remove('opacity-100', 'visible');
+    }
+  });
+
+  // Cerrar si se hace clic fuera del menú
+  document.addEventListener('click', (e) => {
+    if (!menuBtn?.contains(e.target as Node) && !dropdown?.contains(e.target as Node)) {
+      dropdown?.classList.add('opacity-0', 'invisible');
+      dropdown?.classList.remove('opacity-100', 'visible');
+    }
+  });
+
+  // Logout
   document.getElementById('logout-btn')?.addEventListener('click', () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     window.location.href = '/';
   });
+
+  // Ejecutar al cargar
+  updateHeader();
 </script>

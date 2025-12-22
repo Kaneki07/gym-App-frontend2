@@ -1,11 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import LoginForm from '../components/loginForm';
+import LoginForm from '../components/loginForm'; // Asegúrate de que la 'L' coincida con el nombre del archivo
 ---
 
 <Layout title="Iniciar Sesión">
-  <section class="min-h-[80vh] flex items-center justify-center px-4 relative overflow-hidden">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[120px] -z-10"></div>
+  <section class="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[400px] h-[400px] bg-red-600/10 rounded-full blur-[100px] -z-10"></div>
     
     <LoginForm client:load />
   </section>
