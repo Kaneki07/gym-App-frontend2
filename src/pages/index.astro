@@ -28,19 +28,16 @@ import Layout from '../layouts/Layout.astro';
                 Entrena con rutinas de élite, monitorea cada repetición y alcanza tu máximo potencial físico con nuestra plataforma profesional.
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="/login" class="px-8 py-4 md:px-10 md:py-5 bg-red-700 text-white text-lg md:text-xl font-black rounded-xl shadow-[0_0_20px_rgba(185,28,28,0.4)] hover:bg-red-600 transition-all duration-300 transform hover:scale-105 active:scale-95 uppercase tracking-widest text-center">
+            <div class="flex justify-center">
+                <a href="/login" class="px-12 py-4 md:px-14 md:py-5 bg-red-700 text-white text-lg md:text-xl font-black rounded-xl shadow-[0_0_20px_rgba(185,28,28,0.4)] hover:bg-red-600 transition-all duration-300 transform hover:scale-105 active:scale-95 uppercase tracking-widest text-center">
                     Empezar ahora
-                </a>
-                <a href="/register" class="px-8 py-4 md:px-10 md:py-5 bg-transparent border-2 border-gray-700 text-white text-lg md:text-xl font-black rounded-xl hover:bg-gray-800 hover:border-red-600/50 transition-all duration-300 uppercase tracking-widest text-center">
-                    Crear cuenta
                 </a>
             </div>
         </div>
     </section>
 
-    <section class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-        <div class="p-8 bg-black/40 rounded-2xl border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.15)] hover:shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:border-red-600 transition-all duration-500 group">
+    <section class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 overflow-hidden">
+        <div class="reveal-on-scroll p-8 bg-black/40 rounded-2xl border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.15)] hover:shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:border-red-600 transition-all duration-500 group">
             <div class="w-12 h-12 bg-red-900/20 rounded-lg flex items-center justify-center mb-6 shadow-[0_0_10px_rgba(220,38,38,0.2)] group-hover:bg-red-700 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all">
                 <span class="text-red-600 group-hover:text-white font-bold text-2xl">⚡</span>
             </div>
@@ -48,7 +45,7 @@ import Layout from '../layouts/Layout.astro';
             <p class="text-gray-400 leading-relaxed text-sm md:text-base">Planes de entrenamiento diseñados por atletas de alto rendimiento para cada objetivo.</p>
         </div>
 
-        <div class="p-8 bg-black/40 rounded-2xl border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.15)] hover:shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:border-red-600 transition-all duration-500 group">
+        <div class="reveal-on-scroll p-8 bg-black/40 rounded-2xl border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.15)] hover:shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:border-red-600 transition-all duration-500 group">
             <div class="w-12 h-12 bg-red-900/20 rounded-lg flex items-center justify-center mb-6 shadow-[0_0_10px_rgba(220,38,38,0.2)] group-hover:bg-red-700 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all">
                 <span class="text-red-600 group-hover:text-white font-bold text-2xl">📈</span>
             </div>
@@ -56,7 +53,7 @@ import Layout from '../layouts/Layout.astro';
             <p class="text-gray-400 leading-relaxed text-sm md:text-base">Gráficas detalladas de tu progreso físico y marcas personales en tiempo real.</p>
         </div>
 
-        <div class="p-8 bg-black/40 rounded-2xl border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.15)] hover:shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:border-red-600 transition-all duration-500 group">
+        <div class="reveal-on-scroll p-8 bg-black/40 rounded-2xl border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.15)] hover:shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:border-red-600 transition-all duration-500 group">
             <div class="w-12 h-12 bg-red-900/20 rounded-lg flex items-center justify-center mb-6 shadow-[0_0_10px_rgba(220,38,38,0.2)] group-hover:bg-red-700 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all">
                 <span class="text-red-600 group-hover:text-white font-bold text-2xl">🥗</span>
             </div>
@@ -68,33 +65,14 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
-  /* --- Splash Screen Animations --- */
-  .splash-text {
-    animation: splashZoom 0.8s ease-out forwards;
-  }
+  /* --- Splash Screen --- */
+  .splash-text { animation: splashZoom 0.8s ease-out forwards; }
+  .splash-line { width: 0; animation: lineGrow 0.6s 0.4s ease-out forwards; }
+  @keyframes splashZoom { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes lineGrow { from { width: 0; } to { width: 100%; } }
+  .fade-out-splash { opacity: 0; visibility: hidden; transition: opacity 0.6s ease-in-out, visibility 0.6s; }
 
-  .splash-line {
-    width: 0;
-    animation: lineGrow 0.6s 0.4s ease-out forwards;
-  }
-
-  @keyframes splashZoom {
-    0% { opacity: 0; transform: scale(0.9); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-
-  @keyframes lineGrow {
-    from { width: 0; }
-    to { width: 100%; }
-  }
-
-  .fade-out-splash {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.6s ease-in-out, visibility 0.6s;
-  }
-
-  /* --- Typing Effect "Fuerza" --- */
+  /* --- Typing Effect (AHORA SOLO UNA VEZ) --- */
   .typing-container {
     display: inline-block;
     vertical-align: bottom;
@@ -102,19 +80,32 @@ import Layout from '../layouts/Layout.astro';
     white-space: nowrap;
     border-right: 4px solid #dc2626;
     width: 0;
+    /* Cambiado de infinite a forwards para que se quede escrita */
     animation: 
-      typingAnimation 3s steps(6) infinite,
-      cursorBlink 0.7s step-end infinite;
+      typingAnimation 2s steps(6) 2.5s forwards, 
+      cursorBlink 0.7s step-end 6 forwards; /* El cursor parpadea un poco y luego se oculta */
   }
 
   @keyframes typingAnimation {
-    0%, 10% { width: 0; }
-    50%, 80% { width: 6.2ch; }
-    90%, 100% { width: 0; }
+    from { width: 0; }
+    to { width: 6.2ch; }
   }
 
   @keyframes cursorBlink {
-    50% { border-color: transparent; }
+    0%, 100% { border-color: transparent; }
+    50% { border-color: #dc2626; }
+  }
+
+  /* --- Animación al Bajar (Scroll Reveal) --- */
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  .reveal-on-scroll.active {
+    opacity: 1;
+    transform: translateY(0);
   }
 </style>
 
@@ -123,16 +114,38 @@ import Layout from '../layouts/Layout.astro';
     const splash = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
 
-    // Desvanecer splash tras 2 segundos
+    // 1. Manejo del Splash Screen
     setTimeout(() => {
       if (splash) splash.classList.add('fade-out-splash');
       if (mainContent) {
         mainContent.classList.remove('opacity-0');
         mainContent.classList.add('opacity-100');
       }
+      
+      // Inicializar el observador de scroll una vez que el contenido sea visible
+      initScrollReveal();
     }, 2000);
   }
 
-  // Se ejecuta al cargar el DOM
+  // 2. Lógica para que las cosas aparezcan al bajar
+  function initScrollReveal() {
+    const observerOptions = {
+      threshold: 0.15 // Se activa cuando el 15% del elemento es visible
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          // Una vez que aparece, dejamos de observarlo para ahorrar recursos
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    const targets = document.querySelectorAll('.reveal-on-scroll');
+    targets.forEach(target => observer.observe(target));
+  }
+
   document.addEventListener('DOMContentLoaded', initPage);
 </script>
