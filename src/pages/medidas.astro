@@ -21,9 +21,9 @@ import InputGroup from '../components/ImputGroups.astro'
       </a>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="flex flex-col gap-12">
       
-      <div class="lg:col-span-8">
+      <div class="w-full">
         <div class="bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
@@ -85,16 +85,14 @@ import InputGroup from '../components/ImputGroups.astro'
         </div>
       </div>
 
-      <div class="lg:col-span-4">
-        <div class="sticky top-8">
-            <h2 class="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-2">
-                Historial <span class="text-gray-600 text-lg not-italic">📅</span>
-            </h2>
-            
-            <div id="history-container" class="space-y-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
-                <div class="text-gray-500 text-xs font-mono text-center py-10 opacity-50">
-                    Cargando...
-                </div>
+      <div class="w-full">
+        <h2 class="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-2 border-t border-gray-800 pt-8">
+            Historial Completo <span class="text-gray-600 text-lg not-italic">📅</span>
+        </h2>
+        
+        <div id="history-container" class="space-y-4">
+            <div class="text-gray-500 text-xs font-mono text-center py-10 opacity-50">
+                Cargando...
             </div>
         </div>
       </div>
@@ -104,6 +102,7 @@ import InputGroup from '../components/ImputGroups.astro'
 </Layout>
 
 <style>
+    /* Estilos opcionales si decides poner scroll interno, aunque abajo queda mejor sin max-height */
     .custom-scrollbar::-webkit-scrollbar {
         width: 4px;
     }
@@ -145,7 +144,7 @@ function formatDate(dateString: string) {
     });
 }
 
-// 4. Mapeo: HTML ID -> Base de Datos Prisma
+// 4. Mapeo: HTML ID -> Base de Datos Prisma (POST)
 const fieldMapping = {
     peso: 'peso',
     estatura: 'estatura',
@@ -164,6 +163,27 @@ const fieldMapping = {
     pantorrilla_izq: 'pantorrillaIzq',
     pantorrilla_der: 'pantorrillaDer'
 };
+
+// 5. Configuración de Visualización (GET)
+// Esto define qué mostrar en las tarjetas y en qué orden.
+const displayConfig = [
+    { key: 'peso', label: 'Peso', unit: 'Kg' },
+    { key: 'estatura', label: 'Estatura', unit: 'cm' },
+    { key: 'porcentajeGrasa', label: 'Grasa', unit: '%' },
+    { key: 'masaMagra', label: 'M. Magra', unit: 'Kg' },
+    { key: 'cintura', label: 'Cintura', unit: 'cm' },
+    { key: 'pecho', label: 'Pecho', unit: 'cm' },
+    { key: 'espalda', label: 'Espalda', unit: 'cm' },
+    { key: 'cuello', label: 'Cuello', unit: 'cm' },
+    { key: 'brazoIzq', label: 'Braz. Izq', unit: 'cm' },
+    { key: 'brazoDer', label: 'Braz. Der', unit: 'cm' },
+    { key: 'brazoIzqTensado', label: 'Bic. Izq(T)', unit: 'cm' },
+    { key: 'brazoDerTensado', label: 'Bic. Der(T)', unit: 'cm' },
+    { key: 'piernaIzq', label: 'Pier. Izq', unit: 'cm' },
+    { key: 'piernaDer', label: 'Pier. Der', unit: 'cm' },
+    { key: 'pantorrillaIzq', label: 'Pan. Izq', unit: 'cm' },
+    { key: 'pantorrillaDer', label: 'Pan. Der', unit: 'cm' }
+];
 
 // 5. Cargar Historial (GET)
 async function loadHistory() {
@@ -201,11 +221,9 @@ async function loadHistory() {
                         </svg>
                     </button>
                 </div>
-                <div class="grid grid-cols-2 gap-y-2 gap-x-4 border-t border-gray-800 pt-3">
-                    ${renderMiniStat('Peso', entry.peso, 'Kg')}
-                    ${renderMiniStat('Grasa', entry.porcentajeGrasa, '%')}
-                    ${renderMiniStat('Cintura', entry.cintura, 'cm')}
-                    ${renderMiniStat('Bicep (T)', entry.brazoDerTensado, 'cm')}
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-4 gap-x-4 border-t border-gray-800 pt-4">
+                    ${displayConfig.map(field => renderMiniStat(field.label, entry[field.key], field.unit)).join('')}
                 </div>
             </div>
         `).join('');
@@ -217,6 +235,7 @@ async function loadHistory() {
 }
 
 function renderMiniStat(label: string, value: any, unit: string) {
+    // Si es null, undefined o 0, no lo renderizamos para no ensuciar la vista
     if(value === undefined || value === null || value === 0) return '';
     return `
         <div class="flex flex-col">
