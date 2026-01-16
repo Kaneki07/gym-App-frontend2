@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  label: string;
+}
+
+const { id, label } = Astro.props;
+---
+<div class="relative group">
+  <input 
+    type="number" 
+    step="0.01" 
+    name={id} 
+    id={id} 
+    placeholder="0.00" 
+    class="peer w-full bg-black/50 border border-gray-800 rounded-xl px-4 pt-6 pb-2 text-white font-mono focus:outline-none focus:border-red-600 focus:bg-gray-900/80 transition-all placeholder-transparent"
+  />
+  <label 
+    for={id} 
+    class="absolute left-4 top-1 text-[9px] font-black uppercase tracking-widest text-gray-500 transition-all peer-placeholder-shown:text-xs peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-600 peer-focus:top-1 peer-focus:text-[9px] peer-focus:text-red-500"
+  >
+    {label}
+  </label>
+</div>

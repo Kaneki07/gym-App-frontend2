@@ -1,0 +1,310 @@
+---
+import Layout from '../layouts/Layout.astro';
+import InputGroup from '../components/ImputGroups.astro'
+---
+
+<Layout title="Registro de Medidas | Gym App">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+      <div>
+        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white italic">
+          Medidas <span class="text-red-600 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">Corporales</span>
+        </h1>
+        <p class="text-gray-400 text-sm mt-2 font-bold tracking-widest uppercase">
+          Rastrea tu evolución centímetro a centímetro
+        </p>
+      </div>
+      
+      <a href="/dashboard" class="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors bg-gray-900/50 px-6 py-3 rounded-full border border-gray-800 hover:border-red-600/50">
+        <span>←</span> Volver al Dashboard
+      </a>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <div class="lg:col-span-8">
+        <div class="bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+
+          <form id="medidas-form" class="space-y-8">
+            
+            <div>
+              <h3 class="text-red-600 text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-red-600/20 pb-2">Composición Corporal</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <InputGroup id="peso" label="Peso (Kg)" />
+                <InputGroup id="estatura" label="Estatura (cm)" />
+                <InputGroup id="grasa" label="% Grasa" />
+                <InputGroup id="masa_magra" label="Masa Magra (Kg)" />
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-red-600 text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-red-600/20 pb-2">Torso</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <InputGroup id="cuello" label="Cuello (cm)" />
+                <InputGroup id="espalda" label="Espalda (cm)" />
+                <InputGroup id="pecho" label="Pecho (cm)" />
+                <InputGroup id="cintura" label="Cintura (cm)" />
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-red-600 text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-red-600/20 pb-2">Extremidades Superiores</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <InputGroup id="brazo_izq" label="Brazo Izq (cm)" />
+                <InputGroup id="brazo_der" label="Brazo Der (cm)" />
+                <InputGroup id="bicep_izq" label="Bicep Izq Tens (cm)" />
+                <InputGroup id="bicep_der" label="Bicep Der Tens (cm)" />
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-red-600 text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-red-600/20 pb-2">Extremidades Inferiores</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <InputGroup id="pierna_izq" label="Pierna Izq (cm)" />
+                <InputGroup id="pierna_der" label="Pierna Der (cm)" />
+                <InputGroup id="pantorrilla_izq" label="Pantorrilla Izq (cm)" />
+                <InputGroup id="pantorrilla_der" label="Pantorrilla Der (cm)" />
+              </div>
+            </div>
+
+            <div class="pt-4 flex justify-end">
+              <button type="submit" class="group relative px-8 py-4 bg-red-600 text-white font-black uppercase tracking-widest text-xs rounded-xl overflow-hidden shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_30px_rgba(220,38,38,0.6)] transition-all active:scale-95">
+                <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <span class="relative z-10 flex items-center gap-2">
+                  Guardar Registro
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                  </svg>
+                </span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <div class="lg:col-span-4">
+        <div class="sticky top-8">
+            <h2 class="text-2xl font-black text-white italic uppercase tracking-tighter mb-6 flex items-center gap-2">
+                Historial <span class="text-gray-600 text-lg not-italic">📅</span>
+            </h2>
+            
+            <div id="history-container" class="space-y-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
+                <div class="text-gray-500 text-xs font-mono text-center py-10 opacity-50">
+                    Cargando...
+                </div>
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(31, 41, 55, 0.5); 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #dc2626; 
+        border-radius: 4px;
+    }
+</style>
+
+<script>
+// --- LOGICA DEL CLIENTE CONECTADA AL BACKEND ---
+
+const API_URL = "https://gym-app-backend-2-pv91.onrender.com";
+
+// 1. Obtener usuario
+const userStr = localStorage.getItem('user');
+if (!userStr) {
+    alert("Debes iniciar sesión primero");
+    window.location.href = '/'; 
+}
+const user = JSON.parse(userStr || '{}');
+
+// 2. Referencias al DOM
+const form = document.getElementById('medidas-form') as HTMLFormElement;
+const historyContainer = document.getElementById('history-container');
+
+// 3. Helper para fecha
+function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleDateString('es-ES', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+// 4. Mapeo: HTML ID -> Base de Datos Prisma
+const fieldMapping = {
+    peso: 'peso',
+    estatura: 'estatura',
+    grasa: 'porcentajeGrasa',
+    masa_magra: 'masaMagra',
+    cuello: 'cuello',
+    espalda: 'espalda',
+    pecho: 'pecho',
+    cintura: 'cintura',
+    brazo_izq: 'brazoIzq',
+    brazo_der: 'brazoDer',
+    bicep_izq: 'brazoIzqTensado',
+    bicep_der: 'brazoDerTensado',
+    pierna_izq: 'piernaIzq',
+    pierna_der: 'piernaDer',
+    pantorrilla_izq: 'pantorrillaIzq',
+    pantorrilla_der: 'pantorrillaDer'
+};
+
+// 5. Cargar Historial (GET)
+async function loadHistory() {
+    if (!historyContainer) return;
+    
+    historyContainer.innerHTML = '<div class="text-center text-white py-10 animate-pulse text-xs">Actualizando historial...</div>';
+
+    try {
+        const response = await fetch(`${API_URL}/medidas/user/${user.id}`);
+        const result = await response.json();
+
+        if (result.code !== 200) throw new Error(result.message);
+
+        const history = result.data;
+
+        if (!history || history.length === 0) {
+            historyContainer.innerHTML = `
+                <div class="text-gray-500 text-[10px] font-black uppercase tracking-widest text-center py-12 border border-dashed border-gray-800 rounded-2xl">
+                    Sin registros previos
+                </div>
+            `;
+            return;
+        }
+
+        historyContainer.innerHTML = history.map((entry: any) => `
+            <div class="group relative bg-black/40 border border-gray-800 hover:border-red-600/40 p-5 rounded-2xl transition-all hover:bg-gray-900/60">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-[9px] text-red-500 font-black uppercase tracking-widest block mb-1">Fecha de registro</span>
+                        <h4 class="text-white font-bold text-sm">${formatDate(entry.createdAt)}</h4>
+                    </div>
+                    <button onclick="window.deleteMedida('${entry.id}')" class="text-gray-600 hover:text-red-500 transition-colors p-2 -mr-2 -mt-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-y-2 gap-x-4 border-t border-gray-800 pt-3">
+                    ${renderMiniStat('Peso', entry.peso, 'Kg')}
+                    ${renderMiniStat('Grasa', entry.porcentajeGrasa, '%')}
+                    ${renderMiniStat('Cintura', entry.cintura, 'cm')}
+                    ${renderMiniStat('Bicep (T)', entry.brazoDerTensado, 'cm')}
+                </div>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error(error);
+        historyContainer.innerHTML = `<div class="text-red-500 text-center text-xs">Error de conexión</div>`;
+    }
+}
+
+function renderMiniStat(label: string, value: any, unit: string) {
+    if(value === undefined || value === null || value === 0) return '';
+    return `
+        <div class="flex flex-col">
+            <span class="text-[8px] text-gray-500 uppercase tracking-wider">${label}</span>
+            <span class="text-xs font-bold text-gray-200 font-mono">${value}<span class="text-[9px] text-gray-600 ml-0.5">${unit}</span></span>
+        </div>
+    `;
+}
+
+// 6. Guardar Datos (POST)
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = form.querySelector('button');
+    const originalText = btn ? btn.innerHTML : '';
+    
+    if(btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="animate-pulse">Guardando...</span>';
+    }
+
+    try {
+        const formData = new FormData(form);
+        const dataToSend: any = { userId: user.id };
+        let hasData = false;
+
+        // Iterar mapeo para construir objeto
+        for (const [inputId, dbField] of Object.entries(fieldMapping)) {
+            const value = formData.get(inputId);
+            if (value && value.toString().trim() !== '') {
+                dataToSend[dbField] = parseFloat(value.toString());
+                hasData = true;
+            } else {
+                dataToSend[dbField] = 0.0;
+            }
+        }
+
+        if (!hasData) {
+            throw new Error("Ingresa al menos un dato numérico.");
+        }
+
+        const response = await fetch(`${API_URL}/medidas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataToSend)
+        });
+
+        const result = await response.json();
+
+        if (result.code === 201 || result.code === 200) {
+            form.reset();
+            loadHistory();
+            if(btn) btn.innerHTML = '<span class="text-green-400">¡Guardado!</span>';
+        } else {
+            throw new Error(result.message);
+        }
+
+    } catch (error: any) {
+        alert(error.message || "Error al guardar");
+        if(btn) btn.innerHTML = '<span class="text-red-400">Error</span>';
+    } finally {
+        setTimeout(() => {
+            if(btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }, 2000);
+    }
+});
+
+// 7. Eliminar (DELETE)
+(window as any).deleteMedida = async (id: string) => {
+    if(!confirm('¿Eliminar este registro permanentemente?')) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/medidas/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+
+        if (result.code === 200) {
+            loadHistory();
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert("Error de conexión");
+    }
+};
+
+// Inicializar
+loadHistory();
+</script>
