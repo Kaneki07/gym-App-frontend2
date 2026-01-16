@@ -72,7 +72,7 @@ import Layout from '../layouts/Layout.astro';
   @keyframes lineGrow { from { width: 0; } to { width: 100%; } }
   .fade-out-splash { opacity: 0; visibility: hidden; transition: opacity 0.6s ease-in-out, visibility 0.6s; }
 
-  /* --- Typing Effect (AHORA SOLO UNA VEZ) --- */
+  /* --- Typing Effect --- */
   .typing-container {
     display: inline-block;
     vertical-align: bottom;
@@ -80,10 +80,9 @@ import Layout from '../layouts/Layout.astro';
     white-space: nowrap;
     border-right: 4px solid #dc2626;
     width: 0;
-    /* Cambiado de infinite a forwards para que se quede escrita */
     animation: 
       typingAnimation 2s steps(6) 2.5s forwards, 
-      cursorBlink 0.7s step-end 6 forwards; /* El cursor parpadea un poco y luego se oculta */
+      cursorBlink 0.7s step-end 6 forwards; 
   }
 
   @keyframes typingAnimation {
@@ -111,10 +110,19 @@ import Layout from '../layouts/Layout.astro';
 
 <script>
   function initPage() {
+    // 1. Verificar sesión ANTES de ocultar el splash screen
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+        // Si ya hay sesión, redirigir al dashboard y no mostrar la landing
+        window.location.href = '/dashboard';
+        return; 
+    }
+
+    // 2. Si no hay sesión, proceder con la animación de entrada
     const splash = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
 
-    // 1. Manejo del Splash Screen
     setTimeout(() => {
       if (splash) splash.classList.add('fade-out-splash');
       if (mainContent) {
@@ -122,22 +130,19 @@ import Layout from '../layouts/Layout.astro';
         mainContent.classList.add('opacity-100');
       }
       
-      // Inicializar el observador de scroll una vez que el contenido sea visible
       initScrollReveal();
     }, 2000);
   }
 
-  // 2. Lógica para que las cosas aparezcan al bajar
   function initScrollReveal() {
     const observerOptions = {
-      threshold: 0.15 // Se activa cuando el 15% del elemento es visible
+      threshold: 0.15 
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
-          // Una vez que aparece, dejamos de observarlo para ahorrar recursos
           observer.unobserve(entry.target);
         }
       });

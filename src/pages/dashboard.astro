@@ -99,43 +99,66 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  // Lógica de Usuario y Bienvenida
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const welcomeName = document.getElementById('welcome-name');
-  if (user.name && welcomeName) {
-    welcomeName.textContent = user.name.split(' ')[0];
-  }
-
-  // Lógica del Menú de Estado
-  const statusDisplay = document.getElementById('current-status');
-  const menuBtn = document.getElementById('open-status-menu');
-  const dropdown = document.getElementById('status-dropdown');
-  const options = document.querySelectorAll('.status-option');
-
-  menuBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    dropdown?.classList.toggle('hidden');
-  });
-
-  document.addEventListener('click', () => {
-    dropdown?.classList.add('hidden');
-  });
-
-  function setStatus(newStatus: string) {
-    if (statusDisplay) {
-        statusDisplay.textContent = newStatus;
-        localStorage.setItem(`status_${user.id}`, newStatus);
+  // --- GUARDIA DE SEGURIDAD ---
+  // Verifica si existe el token antes de hacer cualquier cosa
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    // Si NO hay token, expulsar al usuario al login
+    window.location.href = '/login';
+  } else {
+    // Solo si hay token ejecutamos el código del dashboard
+    
+    // 1. Recuperar usuario de localStorage de forma segura
+    const userStr = localStorage.getItem('user');
+    let user = { id: 'guest', name: 'Atleta' }; // Valor por defecto
+    try {
+        if (userStr) user = JSON.parse(userStr);
+    } catch (e) {
+        console.error("Error al leer datos del usuario", e);
     }
-    dropdown?.classList.add('hidden');
-  }
 
-  const savedStatus = localStorage.getItem(`status_${user.id}`) || 'Fase de Volumen';
-  if (statusDisplay) statusDisplay.textContent = savedStatus;
+    // 2. Mostrar nombre del usuario
+    const welcomeName = document.getElementById('welcome-name');
+    if (user.name && welcomeName) {
+      welcomeName.textContent = user.name.split(' ')[0];
+    }
 
-  options.forEach(option => {
-    option.addEventListener('click', () => {
-        const val = (option as HTMLElement).dataset.status;
-        if (val) setStatus(val);
+    // 3. Lógica del Menú de Estado
+    const statusDisplay = document.getElementById('current-status');
+    const menuBtn = document.getElementById('open-status-menu');
+    const dropdown = document.getElementById('status-dropdown');
+    const options = document.querySelectorAll('.status-option');
+
+    menuBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown?.classList.toggle('hidden');
     });
-  });
+
+    document.addEventListener('click', () => {
+      dropdown?.classList.add('hidden');
+    });
+
+    // Función para guardar y mostrar estado
+    function setStatus(newStatus: string) {
+      if (statusDisplay) {
+          statusDisplay.textContent = newStatus;
+          // Guardamos el estado vinculado al ID del usuario para que no se mezcle
+          localStorage.setItem(`status_${user.id}`, newStatus);
+      }
+      dropdown?.classList.add('hidden');
+    }
+
+    // Cargar estado guardado anteriormente
+    const savedStatus = localStorage.getItem(`status_${user.id}`) || 'Fase de Volumen';
+    if (statusDisplay) statusDisplay.textContent = savedStatus;
+
+    // Asignar eventos a las opciones
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+          const val = (option as HTMLElement).dataset.status;
+          if (val) setStatus(val);
+      });
+    });
+  }
 </script>
