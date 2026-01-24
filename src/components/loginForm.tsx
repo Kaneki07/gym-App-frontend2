@@ -21,8 +21,11 @@ export default function LoginForm() {
 
         try {
             const { data } = await api.post('/login', formData);
+            
+            // Aquí se guarda el token y el usuario (que ahora incluye { role: "..." })
             localStorage.setItem('token', data.jwt);
             localStorage.setItem('user', JSON.stringify(data.user));
+            
             setStatus({ message: '¡Bienvenido de nuevo!', isError: false, isLoading: false });
 
             setTimeout(() => {
@@ -37,7 +40,6 @@ export default function LoginForm() {
 
     return (
         <div className="w-full max-w-[440px] mx-auto px-2">
-            {/* Formulario con Efecto LED Rojo Permanente y Levantado */}
             <form 
                 onSubmit={handleSubmit} 
                 className="w-full space-y-6 bg-black/60 p-7 sm:p-10 rounded-[2.5rem] border border-red-600/30 shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_20px_rgba(220,38,38,0.15)] backdrop-blur-md hover:shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_30px_rgba(220,38,38,0.25)] transition-all duration-500"
