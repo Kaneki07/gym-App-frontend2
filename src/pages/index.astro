@@ -36,6 +36,36 @@ import Layout from '../layouts/Layout.astro';
         </div>
     </section>
 
+    <section class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto reveal-on-scroll">
+        <div class="bg-black/60 border border-red-600/20 p-6 rounded-2xl flex items-center justify-between shadow-[0_0_15px_rgba(220,38,38,0.1)] backdrop-blur-sm">
+            <div>
+                <p class="text-gray-400 text-sm uppercase tracking-wider font-bold">Atletas Unidos</p>
+                <div class="flex items-baseline gap-1">
+                    <span id="count-display" class="text-4xl font-black text-white">...</span>
+                    <span class="text-red-500 font-bold">+</span>
+                </div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-2xl">
+                👥
+            </div>
+        </div>
+
+        <div class="bg-black/60 border border-red-600/20 p-6 rounded-2xl flex items-center justify-between shadow-[0_0_15px_rgba(220,38,38,0.1)] backdrop-blur-sm">
+            <div>
+                <p class="text-gray-400 text-sm uppercase tracking-wider font-bold">Valoración Global</p>
+                <div class="flex items-center gap-2">
+                    <span class="text-4xl font-black text-white">4.8</span>
+                    <div class="flex text-yellow-500 text-lg">
+                        ★★★★★
+                    </div>
+                </div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-2xl">
+                ⭐
+            </div>
+        </div>
+    </section>
+
     <section class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 overflow-hidden">
         <div class="reveal-on-scroll p-8 bg-black/40 rounded-2xl border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.15)] hover:shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:border-red-600 transition-all duration-500 group">
             <div class="w-12 h-12 bg-red-900/20 rounded-lg flex items-center justify-center mb-6 shadow-[0_0_10px_rgba(220,38,38,0.2)] group-hover:bg-red-700 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all">
@@ -109,6 +139,28 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script>
+  // Función para obtener usuarios del backend
+  async function fetchUserCount() {
+    try {
+        // Asegúrate de que el puerto 3000 sea correcto o cámbialo por tu variable de entorno
+        const response = await fetch('https://gym-app-backend-2-pv91.onrender.com/users/count');
+        const data = await response.json();
+        
+        if (data.code === 200) {
+            const countElement = document.getElementById('count-display');
+            if (countElement) {
+                // Animación simple de conteo si el número es grande, o asignación directa
+                countElement.innerText = data.data.count;
+            }
+        }
+    } catch (error) {
+        console.error("No se pudo obtener el contador de usuarios:", error);
+        // Si falla, dejamos el "..." o ponemos un 0
+        const countElement = document.getElementById('count-display');
+        if(countElement) countElement.innerText = "0";
+    }
+  }
+
   function initPage() {
     // 1. Verificar sesión ANTES de ocultar el splash screen
     const token = localStorage.getItem('token');
@@ -122,6 +174,9 @@ import Layout from '../layouts/Layout.astro';
     // 2. Si no hay sesión, proceder con la animación de entrada
     const splash = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
+
+    // Llamamos a la API para tener el dato listo cuando aparezca la web
+    fetchUserCount();
 
     setTimeout(() => {
       if (splash) splash.classList.add('fade-out-splash');
