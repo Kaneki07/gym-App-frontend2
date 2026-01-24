@@ -58,13 +58,13 @@ import Layout from '../layouts/Layout.astro';
         </div>
         
         <h3 class="text-2xl font-black text-white mb-2 uppercase italic tracking-tighter">Panel Coach</h3>
-        <p class="text-gray-400 text-xs leading-relaxed mb-6">Administración de clientes. Selecciona una acción para gestionar planes.</p>
+        <p class="text-gray-400 text-xs leading-relaxed mb-6">Herramientas exclusivas para entrenadores.</p>
         
         <div class="flex flex-col gap-3">
-            <a href="/dietasAdmin" class="w-full text-center bg-gray-900 hover:bg-red-600 border border-gray-700 hover:border-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1 group-active:scale-95">
+            <a href="/dietasAdmin" class="w-full text-center bg-gray-900 hover:bg-red-600 border border-gray-700 hover:border-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1">
                 Subir Dietas 🍎
             </a>
-            <a href="/rutinasAdmin" class="w-full text-center bg-gray-900 hover:bg-red-600 border border-gray-700 hover:border-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1 group-active:scale-95">
+            <a href="/rutinasAdmin" class="w-full text-center bg-gray-900 hover:bg-red-600 border border-gray-700 hover:border-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1">
                 Subir Rutinas 💪
             </a>
         </div>
@@ -118,7 +118,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  // --- GUARDIA DE SEGURIDAD Y LÓGICA DE CLIENTE ---
+  // --- LÓGICA DEL DASHBOARD ---
   const token = localStorage.getItem('token');
   
   if (!token) {
@@ -130,6 +130,11 @@ import Layout from '../layouts/Layout.astro';
     
     try {
         if (userStr) user = JSON.parse(userStr);
+        
+        // DEPURACIÓN: Muestra en la consola (F12) qué rol detecta
+        console.log("Usuario detectado:", user.name);
+        console.log("Rol detectado:", user.role);
+
     } catch (e) {
         console.error("Error al leer datos del usuario", e);
     }
@@ -139,10 +144,13 @@ import Layout from '../layouts/Layout.astro';
     // ==========================================
     const adminPanel = document.getElementById('admin-panel-card');
     
-    // Verificamos si el usuario tiene el rol 'coach'
-    // IMPORTANTE: Tu backend debe retornar { role: 'coach' } en el login
-    if (adminPanel && user.role === 'coach') {
-        adminPanel.classList.remove('hidden'); // Mostramos la card
+    // Verificamos si existe la card y el rol.
+    // Usamos .toLowerCase() para que sirva con "Coach", "coach" o "COACH"
+    if (adminPanel && user.role && user.role.toLowerCase() === 'coach') {
+        console.log("Rol de coach confirmado. Mostrando panel.");
+        adminPanel.classList.remove('hidden');
+    } else {
+        console.log("No es coach o no se encontró el rol.");
     }
 
     // 3. Mostrar nombre del usuario
