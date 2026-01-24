@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Mi Rutina Personal | Gym App">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <header class="mb-12">
+      <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white italic">
+        Tu Plan de <span class="text-red-600 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">Entrenamiento</span>
+      </h1>
+      <p class="text-gray-500 mt-4 max-w-2xl uppercase font-bold tracking-widest text-xs">
+        Visualiza tu programación técnica y objetivos de fuerza asignados para tu ciclo actual.
+      </p>
+    </header>
+
+    <div id="rutinas-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="col-span-full py-20 text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-red-600 mb-4"></div>
+        <p class="text-gray-500 font-black uppercase tracking-widest text-xs">Sincronizando rutina con el servidor...</p>
+      </div>
+    </div>
+
+    <div class="mt-12">
+        <a href="/dashboard" class="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors font-black uppercase tracking-widest text-[10px]">
+            <span class="text-lg">←</span> Volver al panel
+        </a>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  async function fetchRutinas() {
+    const container = document.getElementById('rutinas-container');
+    const userString = localStorage.getItem('user');
+    const user = JSON.parse(userString || '{}');
+
+    if (!user.id) {
+        if (container) container.innerHTML = `<p class="text-red-500 uppercase font-black">Error: Usuario no identificado</p>`;
+        return;
+    }
+
+    try {
+      // Endpoint de rutinas
+      const response = await fetch(`https://gym-app-backend-2-pv91.onrender.com/rutinas/user/${user.id}`);
+      const result = await response.json();
+
+      if (!container) return;
+
+      if (result.code === 200 && result.data.length > 0) {
+        container.innerHTML = result.data.map((rutina: any) => `
+          <div class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-red-600/60 transition-all duration-500">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-12 h-12 bg-red-900/20 border border-red-600/30 rounded-xl flex items-center justify-center group-hover:bg-red-600 transition-all duration-500">
+                    <span class="text-2xl">🏋️‍♂️</span>
+                </div>
+                <span class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
+                    Asignada el ${new Date(rutina.createdAt).toLocaleDateString()}
+                </span>
+            </div>
+            
+            <h3 class="text-2xl font-black text-white mb-4 uppercase italic tracking-tighter">
+                ${rutina.title}
+            </h3>
+            
+            <div class="text-gray-400 text-sm font-medium leading-relaxed whitespace-pre-wrap border-l-2 border-red-600/30 pl-4 py-2">${rutina.content.trim()}</div>
+
+            <div class="mt-8 flex items-center text-[9px] font-black text-red-600 uppercase tracking-[0.3em]">
+                Programación técnica de alto rendimiento <span class="ml-2">⚡</span>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = `
+          <div class="col-span-full bg-gray-900/20 border border-dashed border-gray-800 p-20 rounded-[2.5rem] text-center">
+            <p class="text-gray-600 font-black uppercase tracking-widest text-sm">Sin rutinas activas</p>
+            <p class="text-gray-700 text-xs mt-2">Tu entrenador aún no ha cargado tu programación de esta semana.</p>
+          </div>
+        `;
+      }
+    } catch (error) {
+      if (container) {
+        container.innerHTML = `<p class="text-red-500 uppercase font-black">Error de conexión con el centro de datos</p>`;
+      }
+    }
+  }
+
+  fetchRutinas();
+</script>
+
+<style>
+  /* Scrollbar personalizado para las rutinas */
+  div::-webkit-scrollbar {
+    width: 4px;
+  }
+  div::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  div::-webkit-scrollbar-thumb {
+    background: #dc2626;
+    border-radius: 10px;
+  }
+</style>
