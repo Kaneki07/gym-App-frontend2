@@ -21,14 +21,32 @@
           </svg>
         </button>
         
-        <div id="dropdown-content" class="absolute right-0 mt-2 w-56 bg-black border border-gray-800 rounded-2xl shadow-2xl opacity-0 invisible transition-all duration-300 overflow-hidden z-[100]">
-          <div class="p-4 bg-gray-900/20">
-            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1 tracking-widest">Atleta</p>
-            <p class="text-xs text-white font-bold truncate" id="dropdown-email">---</p>
+        <div id="dropdown-content" class="absolute right-0 mt-2 w-64 bg-black border border-gray-800 rounded-2xl shadow-2xl opacity-0 invisible transition-all duration-300 overflow-hidden z-[100]">
+          <div class="p-5 bg-gray-900/20 space-y-3">
+            <div>
+                <p class="text-[9px] text-gray-500 uppercase font-black mb-1 tracking-[0.2em]">Correo Electrónico</p>
+                <p class="text-xs text-white font-bold truncate" id="dropdown-email">---</p>
+            </div>
+
+            <div class="pt-2 border-t border-gray-800/50">
+                <p class="text-[9px] text-red-600 uppercase font-black mb-1 tracking-[0.2em]">ID de Atleta (Toca para copiar)</p>
+                
+                <button 
+                    id="copy-id-btn"
+                    class="w-full bg-black/50 border border-gray-800 px-3 py-2 rounded-lg flex items-center justify-between group/id hover:border-red-600/50 transition-all active:scale-[0.98]"
+                    title="Click para copiar ID"
+                >
+                    <code class="text-[10px] text-gray-400 font-mono break-all text-left" id="dropdown-id">---</code>
+                    <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-gray-600 group-hover/id:text-red-500 transition-colors shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                    </svg>
+                    <span id="copy-check" class="hidden text-[8px] font-black text-green-500 uppercase tracking-widest shrink-0 ml-2">¡Copiado!</span>
+                </button>
+            </div>
           </div>
 
           <div class="border-t border-gray-900 bg-red-950/5">
-            <button id="logout-btn" class="w-full text-left px-4 py-4 text-[11px] text-red-500 hover:bg-red-600 hover:text-white transition-all font-black uppercase tracking-[0.2em]">
+            <button id="logout-btn" class="w-full text-left px-5 py-4 text-[11px] text-red-500 hover:bg-red-600 hover:text-white transition-all font-black uppercase tracking-[0.2em]">
               Cerrar Sesión
             </button>
           </div>
@@ -58,10 +76,13 @@
         const nameDisplay = document.getElementById('user-name-display');
         const initialsDisplay = document.getElementById('user-initials');
         const dropdownEmail = document.getElementById('dropdown-email');
+        const dropdownId = document.getElementById('dropdown-id');
 
         if (nameDisplay) nameDisplay.textContent = user.name;
         if (initialsDisplay) initialsDisplay.textContent = user.name.substring(0, 2).toUpperCase();
         if (dropdownEmail) dropdownEmail.textContent = user.email;
+        if (dropdownId) dropdownId.textContent = user.id;
+
       } catch (e) {
         console.error("Error al cargar datos de usuario");
       }
@@ -72,15 +93,38 @@
     }
   }
 
-  // --- LÓGICA DE INTERACCIÓN (Móvil y PC) ---
+  // --- LÓGICA DE COPIAR ID ---
+  const copyBtn = document.getElementById('copy-id-btn');
+  const copyIcon = document.getElementById('copy-icon');
+  const copyCheck = document.getElementById('copy-check');
+
+  copyBtn?.addEventListener('click', async () => {
+    const idText = document.getElementById('dropdown-id')?.textContent;
+    if (idText && idText !== '---') {
+        try {
+            await navigator.clipboard.writeText(idText);
+            
+            // Feedback Visual
+            copyIcon?.classList.add('hidden');
+            copyCheck?.classList.remove('hidden');
+            
+            setTimeout(() => {
+                copyCheck?.classList.add('hidden');
+                copyIcon?.classList.remove('hidden');
+            }, 2000);
+        } catch (err) {
+            console.error('Error al copiar: ', err);
+        }
+    }
+  });
+
+  // --- LÓGICA DE MENÚ ---
   const menuBtn = document.getElementById('menu-trigger');
   const dropdown = document.getElementById('dropdown-content');
 
-  // Abrir/Cerrar al hacer clic o tocar
   menuBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     const isHidden = dropdown?.classList.contains('invisible');
-    
     if (isHidden) {
       dropdown?.classList.remove('opacity-0', 'invisible');
       dropdown?.classList.add('opacity-100', 'visible');
@@ -90,7 +134,6 @@
     }
   });
 
-  // Cerrar si se hace clic fuera del menú
   document.addEventListener('click', (e) => {
     if (!menuBtn?.contains(e.target as Node) && !dropdown?.contains(e.target as Node)) {
       dropdown?.classList.add('opacity-0', 'invisible');
@@ -98,13 +141,11 @@
     }
   });
 
-  // Logout
   document.getElementById('logout-btn')?.addEventListener('click', () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     window.location.href = '/';
   });
 
-  // Ejecutar al cargar
   updateHeader();
 </script>
