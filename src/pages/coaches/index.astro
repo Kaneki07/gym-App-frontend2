@@ -41,10 +41,16 @@ import Layout from '../../layouts/Layout.astro';
                     }
 
                     grid.innerHTML = coaches.map((coach: any) => {
-                        // Lógica para determinar la URL correcta de la imagen
-                        const profileImg = coach.profileImage 
-                            ? (coach.profileImage.startsWith('http') ? coach.profileImage : `${BACKEND_URL}${coach.profileImage}`)
-                            : 'https://via.placeholder.com/400x500?text=Coach';
+                        // --- LÓGICA DE IMAGEN CORREGIDA (SOPORTE BASE64) ---
+                        let profileImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(coach.name)}&background=random`;
+                        
+                        if (coach.profileImage) {
+                            if (coach.profileImage.startsWith('data:') || coach.profileImage.startsWith('http')) {
+                                profileImg = coach.profileImage;
+                            } else {
+                                profileImg = `${BACKEND_URL}${coach.profileImage}`;
+                            }
+                        }
 
                         return `
                         <a href="/coaches/${coach.id}" class="group bg-zinc-900 border border-white/5 rounded-[2rem] overflow-hidden hover:border-red-600/50 transition-all duration-500 hover:-translate-y-2">
@@ -69,7 +75,7 @@ import Layout from '../../layouts/Layout.astro';
                                 </div>
                             </div>
                         </a>
-                    `}).join('');
+                    `;}).join('');
                 }
             }
         } catch (error) {
