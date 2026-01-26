@@ -109,14 +109,19 @@ import Layout from '../../layouts/Layout.astro';
                 const img = document.getElementById('c-image') as HTMLImageElement;
                 if (img) {
                     if (c.profileImage) {
-                        img.src = c.profileImage.startsWith('http') ? c.profileImage : `${BACKEND_URL}${c.profileImage}`;
+                        // MODIFICACIÓN PARA SOPORTE BASE64
+                        if (c.profileImage.startsWith('data:')) {
+                            img.src = c.profileImage;
+                        } else if (c.profileImage.startsWith('http')) {
+                            img.src = c.profileImage;
+                        } else {
+                            img.src = `${BACKEND_URL}${c.profileImage}`;
+                        }
                     } else {
-                        img.src = 'https://via.placeholder.com/400?text=Sin+Foto';
+                        img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=random`;
                     }
                 }
 
-                // --- LÓGICA DE CONTACTO AJUSTADA ---
-                
                 // WhatsApp
                 const waBtn = document.getElementById('c-whatsapp-btn') as HTMLAnchorElement;
                 if (waBtn) {
