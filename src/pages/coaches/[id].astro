@@ -1,5 +1,5 @@
 ---
-// 1. Agrega esta línea para desactivar el pre-renderizado estático
+// 1. Desactivamos pre-renderizado para rutas dinámicas
 export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 ---
@@ -14,7 +14,7 @@ import Layout from '../../layouts/Layout.astro';
                         <img id="c-image" src="" class="w-full aspect-[3/4] object-cover" />
                     </div>
                     
-                    <div class="bg-zinc-900 rounded-[2rem] p-8 border border-white/5">
+                    <div class="bg-zinc-900 rounded-[2rem] p-8 border border-white/5 mb-6">
                         <div class="text-center mb-6">
                             <div id="c-rating-stars" class="text-3xl mb-2">⭐⭐⭐⭐⭐</div>
                             <div class="text-4xl font-black text-white italic"><span id="c-rating-num">0.0</span></div>
@@ -28,6 +28,27 @@ import Layout from '../../layouts/Layout.astro';
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-500">Experiencia</span>
                                 <span id="c-exp" class="text-red-600 font-bold uppercase italic">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-zinc-900 rounded-[2rem] p-8 border border-white/5">
+                        <h3 class="text-xs font-black text-red-600 uppercase tracking-[0.4em] mb-6 text-center">Contacto Directo</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex flex-col gap-1 text-center">
+                                <span class="text-[10px] text-gray-500 uppercase font-black">Email</span>
+                                <a id="c-email" href="#" class="text-white font-bold hover:text-red-500 transition-colors break-all text-sm">---</a>
+                            </div>
+                
+                            <div class="grid gap-3 pt-2">
+                                <a id="c-whatsapp-btn" href="#" target="_blank" class="hidden flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white text-[10px] font-black uppercase py-3 rounded-xl transition-all tracking-widest shadow-lg shadow-green-900/20">
+                                    <span class="text-lg">💬</span> <span>WhatsApp</span>
+                                </a>
+                                
+                                <a id="c-instagram-btn" href="#" target="_blank" class="hidden flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white text-[10px] font-black uppercase py-3 rounded-xl transition-all tracking-widest shadow-lg shadow-purple-900/20">
+                                    <span class="text-lg">📸</span> <span>Instagram</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -90,16 +111,15 @@ import Layout from '../../layouts/Layout.astro';
             if (result.code === 200) {
                 const c = result.data;
 
-                // Rellenar datos en el HTML
+                // Rellenar datos básicos
                 setText('c-name', c.name);
                 setText('c-desc', c.description || 'Sin biografía disponible.');
                 setText('c-exp', c.experience || 'No especificada');
                 setText('c-rating-num', c.rating);
                 setText('c-total-reviews', c.reviewCount);
 
-                // --- CORRECCIÓN AQUÍ: Agregamos 'as HTMLImageElement' ---
+                // Imagen
                 const img = document.getElementById('c-image') as HTMLImageElement;
-                
                 if (img) {
                     if (c.profileImage) {
                         img.src = c.profileImage.startsWith('http') 
@@ -107,6 +127,44 @@ import Layout from '../../layouts/Layout.astro';
                             : `${BACKEND_URL}${c.profileImage}`;
                     } else {
                         img.src = 'https://via.placeholder.com/400?text=Sin+Foto';
+                    }
+                }
+
+                // --- LÓGICA DE CONTACTO ---
+                
+                // 1. Email
+                const emailElem = document.getElementById('c-email') as HTMLAnchorElement;
+                if (emailElem) {
+                    emailElem.textContent = c.email || 'Oculto';
+                    emailElem.href = `mailto:${c.email}`;
+                }
+
+                // 2. WhatsApp
+                const waBtn = document.getElementById('c-whatsapp-btn') as HTMLAnchorElement;
+                if (waBtn) {
+                    if (c.phone) {
+                        const cleanPhone = c.phone.replace(/\D/g, ''); // Limpiar caracteres no numéricos
+                        waBtn.href = `https://wa.me/${cleanPhone}`;
+                        waBtn.classList.remove('hidden');
+                        waBtn.classList.add('flex'); 
+                    } else {
+                        waBtn.classList.add('hidden');
+                    }
+                }
+
+                // 3. Instagram
+                const igBtn = document.getElementById('c-instagram-btn') as HTMLAnchorElement;
+                if (igBtn) {
+                    if (c.instagram) {
+                        const igLink = c.instagram.startsWith('http') 
+                            ? c.instagram 
+                            : `https://instagram.com/${c.instagram.replace('@', '')}`;
+                        
+                        igBtn.href = igLink;
+                        igBtn.classList.remove('hidden');
+                        igBtn.classList.add('flex');
+                    } else {
+                        igBtn.classList.add('hidden');
                     }
                 }
 
@@ -156,7 +214,6 @@ import Layout from '../../layouts/Layout.astro';
 
     // --- 3. ENVIAR NUEVA RESEÑA ---
     document.getElementById('btn-send-review')?.addEventListener('click', async () => {
-        // --- CORRECCIÓN AQUÍ TAMBIÉN: Definimos tipos para evitar errores de '.value' ---
         const starsElem = document.getElementById('rev-stars') as HTMLSelectElement;
         const commentElem = document.getElementById('rev-comment') as HTMLTextAreaElement;
 

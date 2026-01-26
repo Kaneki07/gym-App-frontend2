@@ -51,13 +51,23 @@ import Layout from '../layouts/Layout.astro';
                         <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Años de Experiencia / Títulos</label>
                         <input type="text" id="experience" name="experience" class="w-full bg-zinc-900/50 border border-white/10 focus:border-red-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium" placeholder="Ej: 5 años, Especialista en Hipertrofia">
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-black text-green-500 uppercase tracking-widest mb-2 ml-1">WhatsApp (Con código de país)</label>
+                        <input type="text" id="phone" name="phone" class="w-full bg-zinc-900/50 border border-white/10 focus:border-green-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium" placeholder="Ej: 584121234567">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-black text-pink-500 uppercase tracking-widest mb-2 ml-1">Instagram</label>
+                        <input type="text" id="instagram" name="instagram" class="w-full bg-zinc-900/50 border border-white/10 focus:border-pink-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium" placeholder="Ej: @tu_usuario o link completo">
+                    </div>
                 </div>
             </div>
 
             <div class="space-y-6">
                 <div>
                     <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Biografía / Sobre Mí</label>
-                    <textarea id="description" name="description" rows="12" class="w-full bg-zinc-900/50 border border-white/10 focus:border-red-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium resize-none" placeholder="Describe tu metodología, logros y qué pueden esperar tus clientes de ti..."></textarea>
+                    <textarea id="description" name="description" rows="16" class="w-full bg-zinc-900/50 border border-white/10 focus:border-red-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium resize-none" placeholder="Describe tu metodología, logros y qué pueden esperar tus clientes de ti..."></textarea>
                 </div>
             </div>
 
@@ -85,7 +95,7 @@ import Layout from '../layouts/Layout.astro';
     const imgInput = document.getElementById('profileImage') as HTMLInputElement;
     const imgPreview = document.getElementById('preview-image') as HTMLImageElement;
 
-    if (!token || user.role !== 'Coach') {
+    if (!token || user.role !== 'coach') {
         window.location.href = '/dashboard';
     }
 
@@ -101,12 +111,17 @@ import Layout from '../layouts/Layout.astro';
 
             if (data.code === 200) {
                 const u = data.data;
+                // Campos de Texto
                 (document.getElementById('name') as HTMLInputElement).value = u.name || '';
                 (document.getElementById('experience') as HTMLInputElement).value = u.experience || '';
                 (document.getElementById('description') as HTMLTextAreaElement).value = u.description || '';
+                
+                // Nuevos campos de contacto
+                (document.getElementById('phone') as HTMLInputElement).value = u.phone || '';
+                (document.getElementById('instagram') as HTMLInputElement).value = u.instagram || '';
 
+                // Imagen
                 if (u.profileImage) {
-                    // Si la ruta es relativa del servidor (/uploads/...), concatenamos el BACKEND_URL
                     imgPreview.src = u.profileImage.startsWith('http') 
                         ? u.profileImage 
                         : `${BACKEND_URL}${u.profileImage}`;
@@ -135,18 +150,20 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submit-btn') as HTMLButtonElement;
-        const form = e.target as HTMLFormElement;
-
+        
         btn.innerText = "Guardando...";
         btn.disabled = true;
 
-        // --- CLAVE: Usamos FormData para enviar el archivo y los campos ---
         const formData = new FormData();
         formData.append('name', (document.getElementById('name') as HTMLInputElement).value);
         formData.append('experience', (document.getElementById('experience') as HTMLInputElement).value);
         formData.append('description', (document.getElementById('description') as HTMLTextAreaElement).value);
         
-        // Si hay un archivo seleccionado, lo agregamos
+        // Agregar nuevos campos de contacto
+        formData.append('phone', (document.getElementById('phone') as HTMLInputElement).value);
+        formData.append('instagram', (document.getElementById('instagram') as HTMLInputElement).value);
+        
+        // Imagen
         if (imgInput.files?.[0]) {
             formData.append('profileImage', imgInput.files[0]);
         }
@@ -155,9 +172,8 @@ import Layout from '../layouts/Layout.astro';
             const res = await fetch(`${BACKEND_URL}/users/${user.id}`, {
                 method: 'PUT',
                 headers: {
-                    // IMPORTANTE: No pongas 'Content-Type': 'application/json'
-                    // El navegador pondrá automáticamente 'multipart/form-data' con el boundary correcto
                     'Authorization': `Bearer ${token}`
+                    // No poner Content-Type manual con FormData
                 },
                 body: formData 
             });
@@ -170,12 +186,10 @@ import Layout from '../layouts/Layout.astro';
                     msgBox.className = "mt-4 text-center text-sm font-bold p-3 rounded-lg bg-green-500/20 text-green-400 border border-green-500/50";
                     msgBox.innerText = "✅ Perfil actualizado correctamente";
                     
-                    // Actualizar localStorage
                     user.name = result.data.name;
                     user.profileImage = result.data.profileImage;
                     localStorage.setItem('user', JSON.stringify(user));
 
-                    // Opcional: recargar después de un momento para ver los cambios
                     setTimeout(() => location.reload(), 1500);
 
                 } else {
