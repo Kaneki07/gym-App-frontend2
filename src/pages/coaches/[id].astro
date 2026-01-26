@@ -70,83 +70,130 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <script>
+    // Configuración
     const BACKEND_URL = "https://gym-app-backend-2-pv91.onrender.com";
     const coachId = window.location.pathname.split('/').pop();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const container = document.getElementById('coach-content');
 
+    // --- 1. CARGAR DATOS DEL PERFIL ---
     async function loadCoachDetail() {
         try {
-            // 1. Cargar Perfil y Rating Promedio
+            console.log("Buscando coach:", coachId);
+            
             const res = await fetch(`${BACKEND_URL}/coaches/${coachId}`);
+            
+            if (!res.ok) throw new Error(`Error de conexión: ${res.status}`);
+
             const result = await res.json();
 
             if (result.code === 200) {
                 const c = result.data;
-                document.getElementById('c-name')!.textContent = c.name;
-                
-                // --- CAMBIO PARA IMAGENES SUBIDAS ---
-                const img = document.getElementById('c-image') as HTMLImageElement;
-                if (c.profileImage) {
-                    img.src = c.profileImage.startsWith('http') 
-                        ? c.profileImage 
-                        : `${BACKEND_URL}${c.profileImage}`;
-                } else {
-                    img.src = 'https://via.placeholder.com/400';
-                }
-                // ------------------------------------
 
-                document.getElementById('c-desc')!.textContent = c.description || 'Sin biografía disponible.';
-                document.getElementById('c-exp')!.textContent = c.experience || 'No especificada';
-                document.getElementById('c-rating-num')!.textContent = c.rating;
-                document.getElementById('c-total-reviews')!.textContent = c.reviewCount;
-                document.getElementById('coach-content')?.classList.remove('hidden');
+                // Rellenar datos en el HTML
+                setText('c-name', c.name);
+                setText('c-desc', c.description || 'Sin biografía disponible.');
+                setText('c-exp', c.experience || 'No especificada');
+                setText('c-rating-num', c.rating);
+                setText('c-total-reviews', c.reviewCount);
+
+                // --- CORRECCIÓN AQUÍ: Agregamos 'as HTMLImageElement' ---
+                const img = document.getElementById('c-image') as HTMLImageElement;
+                
+                if (img) {
+                    if (c.profileImage) {
+                        img.src = c.profileImage.startsWith('http') 
+                            ? c.profileImage 
+                            : `${BACKEND_URL}${c.profileImage}`;
+                    } else {
+                        img.src = 'https://via.placeholder.com/400?text=Sin+Foto';
+                    }
+                }
+
+                container?.classList.remove('hidden');
+                loadReviews();
+
+            } else {
+                alert(result.message || "No se encontró el coach");
+                window.location.href = '/users';
             }
 
-            // 2. Cargar Comentarios Individuales
-            const resRev = await fetch(`${BACKEND_URL}/reviews/coach/${coachId}`);
-            const resultRev = await resRev.json();
-            
+        } catch (e) {
+            console.error("Error crítico:", e);
+            alert("Hubo un error al cargar el perfil. Revisa tu conexión o la consola.");
+            container?.classList.remove('hidden');
+        }
+    }
+
+    // --- 2. CARGAR RESEÑAS ---
+    async function loadReviews() {
+        try {
+            const res = await fetch(`${BACKEND_URL}/reviews/coach/${coachId}`);
+            const result = await res.json();
             const list = document.getElementById('reviews-list');
-            if (resultRev.code === 200 && list) {
-                if (resultRev.data.length === 0) {
-                    list.innerHTML = `<p class="text-gray-500 italic text-sm">Este coach aún no tiene reseñas. ¡Sé el primero!</p>`;
+
+            if (result.code === 200 && list) {
+                if (result.data.length === 0) {
+                    list.innerHTML = `<p class="text-gray-500 italic text-sm">Aún no hay reseñas. ¡Sé el primero!</p>`;
                 } else {
-                    list.innerHTML = resultRev.data.map((r: any) => `
-                        <div class="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                    list.innerHTML = result.data.map((r: any) => `
+                        <div class="bg-zinc-900/50 p-6 rounded-2xl border border-white/5 shadow-sm">
                             <div class="flex justify-between mb-2">
-                                <span class="text-yellow-500 text-xs">${"⭐".repeat(r.stars)}</span>
-                                <span class="text-[9px] text-gray-600 uppercase font-bold">${new Date(r.createdAt).toLocaleDateString()}</span>
+                                <span class="text-yellow-500 text-xs tracking-widest">${"⭐".repeat(r.stars)}</span>
+                                <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">
+                                    ${new Date(r.createdAt).toLocaleDateString()}
+                                </span>
                             </div>
-                            <p class="text-gray-300 text-sm italic">"${r.comment || 'Sin comentario'}"</p>
+                            <p class="text-gray-300 text-sm italic leading-relaxed">"${r.comment || 'Sin comentario'}"</p>
                         </div>
                     `).join('');
                 }
             }
-        } catch (e) { console.error(e); }
+        } catch (error) {
+            console.error("Error cargando reviews:", error);
+        }
     }
 
-    // 3. Lógica para enviar Review
+    // --- 3. ENVIAR NUEVA RESEÑA ---
     document.getElementById('btn-send-review')?.addEventListener('click', async () => {
-        const stars = (document.getElementById('rev-stars') as HTMLSelectElement).value;
-        const comment = (document.getElementById('rev-comment') as HTMLTextAreaElement).value;
+        // --- CORRECCIÓN AQUÍ TAMBIÉN: Definimos tipos para evitar errores de '.value' ---
+        const starsElem = document.getElementById('rev-stars') as HTMLSelectElement;
+        const commentElem = document.getElementById('rev-comment') as HTMLTextAreaElement;
 
-        if (!user.id) return alert("Debes estar logueado para calificar.");
+        if (!user.id) return alert("Debes iniciar sesión para calificar.");
+        if (!starsElem || !commentElem) return;
 
-        const res = await fetch(`${BACKEND_URL}/reviews`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                stars: parseInt(stars),
-                comment,
-                coachId,
-                clientId: user.id
-            })
-        });
+        const stars = parseInt(starsElem.value);
+        const comment = commentElem.value;
 
-        const data = await res.json();
-        alert(data.message);
-        if (data.code === 201) location.reload();
+        try {
+            const res = await fetch(`${BACKEND_URL}/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    stars: stars,
+                    comment: comment,
+                    coachId: coachId,
+                    clientId: user.id
+                })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            if (data.code === 201) {
+                location.reload(); 
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error al enviar la reseña.");
+        }
     });
+
+    function setText(id: string, text: string) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
 
     loadCoachDetail();
 </script>
