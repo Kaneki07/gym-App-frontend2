@@ -22,14 +22,16 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <script>
+    // Definimos la URL base del backend
+    const BACKEND_URL = "https://gym-app-backend-2-pv91.onrender.com";
+
     async function loadCoaches() {
         const grid = document.getElementById('coaches-grid');
         try {
-            const res = await fetch('https://gym-app-backend-2-pv91.onrender.com/users');
+            const res = await fetch(`${BACKEND_URL}/users`);
             const result = await res.json();
             
             if (result.code === 200) {
-                // Filtramos solo los que son coaches
                 const coaches = result.data.filter((u: any) => u.role.toLowerCase() === 'coach');
                 
                 if (grid) {
@@ -38,11 +40,17 @@ import Layout from '../../layouts/Layout.astro';
                         return;
                     }
 
-                    grid.innerHTML = coaches.map((coach: any) => `
+                    grid.innerHTML = coaches.map((coach: any) => {
+                        // Lógica para determinar la URL correcta de la imagen
+                        const profileImg = coach.profileImage 
+                            ? (coach.profileImage.startsWith('http') ? coach.profileImage : `${BACKEND_URL}${coach.profileImage}`)
+                            : 'https://via.placeholder.com/400x500?text=Coach';
+
+                        return `
                         <a href="/coaches/${coach.id}" class="group bg-zinc-900 border border-white/5 rounded-[2rem] overflow-hidden hover:border-red-600/50 transition-all duration-500 hover:-translate-y-2">
                             <div class="aspect-[4/5] overflow-hidden relative">
                                 <img 
-                                    src="${coach.profileImage || 'https://via.placeholder.com/400x500?text=Coach'}" 
+                                    src="${profileImg}" 
                                     alt="${coach.name}" 
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
@@ -61,7 +69,7 @@ import Layout from '../../layouts/Layout.astro';
                                 </div>
                             </div>
                         </a>
-                    `).join('');
+                    `}).join('');
                 }
             }
         } catch (error) {

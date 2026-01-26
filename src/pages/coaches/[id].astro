@@ -70,19 +70,31 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <script>
+    const BACKEND_URL = "https://gym-app-backend-2-pv91.onrender.com";
     const coachId = window.location.pathname.split('/').pop();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     async function loadCoachDetail() {
         try {
             // 1. Cargar Perfil y Rating Promedio
-            const res = await fetch(`https://gym-app-backend-2-pv91.onrender.com/coaches/${coachId}`);
+            const res = await fetch(`${BACKEND_URL}/coaches/${coachId}`);
             const result = await res.json();
 
             if (result.code === 200) {
                 const c = result.data;
                 document.getElementById('c-name')!.textContent = c.name;
-                (document.getElementById('c-image') as HTMLImageElement).src = c.profileImage || 'https://via.placeholder.com/400';
+                
+                // --- CAMBIO PARA IMAGENES SUBIDAS ---
+                const img = document.getElementById('c-image') as HTMLImageElement;
+                if (c.profileImage) {
+                    img.src = c.profileImage.startsWith('http') 
+                        ? c.profileImage 
+                        : `${BACKEND_URL}${c.profileImage}`;
+                } else {
+                    img.src = 'https://via.placeholder.com/400';
+                }
+                // ------------------------------------
+
                 document.getElementById('c-desc')!.textContent = c.description || 'Sin biografía disponible.';
                 document.getElementById('c-exp')!.textContent = c.experience || 'No especificada';
                 document.getElementById('c-rating-num')!.textContent = c.rating;
@@ -91,7 +103,7 @@ import Layout from '../../layouts/Layout.astro';
             }
 
             // 2. Cargar Comentarios Individuales
-            const resRev = await fetch(`http://localhost:3000/reviews/coach/${coachId}`);
+            const resRev = await fetch(`${BACKEND_URL}/reviews/coach/${coachId}`);
             const resultRev = await resRev.json();
             
             const list = document.getElementById('reviews-list');
@@ -120,7 +132,7 @@ import Layout from '../../layouts/Layout.astro';
 
         if (!user.id) return alert("Debes estar logueado para calificar.");
 
-        const res = await fetch('http://localhost:3000/reviews', {
+        const res = await fetch(`${BACKEND_URL}/reviews`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
