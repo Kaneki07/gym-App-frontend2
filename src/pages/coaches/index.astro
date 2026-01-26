@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Nuestros Coaches | Gym App">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <header class="mb-12">
+            <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white italic">
+                Staff <span class="text-red-600">Profesional</span>
+            </h1>
+            <p class="text-gray-400 mt-4 max-w-2xl font-medium">
+                Selecciona a un entrenador para ver su trayectoria, especialidades y las valoraciones de otros atletas.
+            </p>
+        </header>
+
+        <div id="coaches-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="col-span-full text-center py-20 text-gray-500 animate-pulse uppercase font-black tracking-widest">
+                Buscando entrenadores de élite...
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    async function loadCoaches() {
+        const grid = document.getElementById('coaches-grid');
+        try {
+            const res = await fetch('http://localhost:3000/users');
+            const result = await res.json();
+            
+            if (result.code === 200) {
+                // Filtramos solo los que son coaches
+                const coaches = result.data.filter((u: any) => u.role.toLowerCase() === 'coach');
+                
+                if (grid) {
+                    if (coaches.length === 0) {
+                        grid.innerHTML = `<p class="col-span-full text-center text-gray-500">No hay coaches disponibles en este momento.</p>`;
+                        return;
+                    }
+
+                    grid.innerHTML = coaches.map((coach: any) => `
+                        <a href="/coaches/${coach.id}" class="group bg-zinc-900 border border-white/5 rounded-[2rem] overflow-hidden hover:border-red-600/50 transition-all duration-500 hover:-translate-y-2">
+                            <div class="aspect-[4/5] overflow-hidden relative">
+                                <img 
+                                    src="${coach.profileImage || 'https://via.placeholder.com/400x500?text=Coach'}" 
+                                    alt="${coach.name}" 
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                                <div class="absolute bottom-6 left-6 right-6">
+                                    <h3 class="text-xl font-black text-white uppercase italic tracking-tighter">${coach.name}</h3>
+                                    <div class="flex items-center gap-1 mt-1 text-yellow-500">
+                                        <span class="text-xs font-black">PERFIL PROFESIONAL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6 flex justify-between items-center bg-black/40">
+                                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Ver Detalles</span>
+                                <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white">
+                                    →
+                                </div>
+                            </div>
+                        </a>
+                    `).join('');
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            if (grid) grid.innerHTML = `<p class="text-red-500">Error al conectar con el servidor.</p>`;
+        }
+    }
+
+    loadCoaches();
+</script>

@@ -1,0 +1,138 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Perfil del Coach | Gym App">
+    <div id="coach-content" class="max-w-6xl mx-auto px-6 py-12 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <div class="lg:col-span-4">
+                <div class="sticky top-12">
+                    <div class="rounded-[3rem] overflow-hidden border-4 border-red-600/20 shadow-2xl mb-8">
+                        <img id="c-image" src="" class="w-full aspect-[3/4] object-cover" />
+                    </div>
+                    
+                    <div class="bg-zinc-900 rounded-[2rem] p-8 border border-white/5">
+                        <div class="text-center mb-6">
+                            <div id="c-rating-stars" class="text-3xl mb-2">⭐⭐⭐⭐⭐</div>
+                            <div class="text-4xl font-black text-white italic"><span id="c-rating-num">0.0</span></div>
+                            <p class="text-[10px] text-gray-500 uppercase font-black tracking-[0.3em]">Puntuación Media</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between text-sm border-b border-white/5 pb-2">
+                                <span class="text-gray-500">Reseñas</span>
+                                <span id="c-total-reviews" class="text-white font-bold">0</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Experiencia</span>
+                                <span id="c-exp" class="text-red-600 font-bold uppercase italic">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8">
+                <h1 id="c-name" class="text-6xl md:text-8xl font-black text-white uppercase italic tracking-tighter leading-none mb-6">---</h1>
+                
+                <div class="mb-12">
+                    <h2 class="text-xs font-black text-red-600 uppercase tracking-[0.4em] mb-4">Sobre el Coach</h2>
+                    <p id="c-desc" class="text-xl text-gray-300 leading-relaxed font-medium italic">...</p>
+                </div>
+
+                <hr class="border-white/5 mb-12" />
+
+                <section class="mb-12 bg-red-600/5 p-8 rounded-[2rem] border border-red-600/20">
+                    <h3 class="text-2xl font-black text-white uppercase italic mb-6">¿Entrenaste con este coach?</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <select id="rev-stars" class="bg-black text-white p-4 rounded-xl border border-white/10 outline-none">
+                            <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
+                            <option value="4">⭐⭐⭐⭐ Muy Bueno</option>
+                            <option value="3">⭐⭐⭐ Regular</option>
+                            <option value="2">⭐⭐ Malo</option>
+                            <option value="1">⭐ Pésimo</option>
+                        </select>
+                        <button id="btn-send-review" class="bg-red-600 text-white font-black uppercase tracking-widest rounded-xl hover:bg-white hover:text-red-600 transition-all">Enviar Valoración</button>
+                        <textarea id="rev-comment" placeholder="Escribe un breve comentario..." class="md:col-span-2 bg-black text-white p-4 rounded-xl border border-white/10 h-24 outline-none"></textarea>
+                    </div>
+                </section>
+
+                <section>
+                    <h3 class="text-xl font-black text-white uppercase tracking-widest mb-8 italic">Comentarios de la Comunidad</h3>
+                    <div id="reviews-list" class="space-y-6">
+                        </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    const coachId = window.location.pathname.split('/').pop();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    async function loadCoachDetail() {
+        try {
+            // 1. Cargar Perfil y Rating Promedio
+            const res = await fetch(`http://localhost:3000/coaches/${coachId}`);
+            const result = await res.json();
+
+            if (result.code === 200) {
+                const c = result.data;
+                document.getElementById('c-name')!.textContent = c.name;
+                (document.getElementById('c-image') as HTMLImageElement).src = c.profileImage || 'https://via.placeholder.com/400';
+                document.getElementById('c-desc')!.textContent = c.description || 'Sin biografía disponible.';
+                document.getElementById('c-exp')!.textContent = c.experience || 'No especificada';
+                document.getElementById('c-rating-num')!.textContent = c.rating;
+                document.getElementById('c-total-reviews')!.textContent = c.reviewCount;
+                document.getElementById('coach-content')?.classList.remove('hidden');
+            }
+
+            // 2. Cargar Comentarios Individuales
+            const resRev = await fetch(`http://localhost:3000/reviews/coach/${coachId}`);
+            const resultRev = await resRev.json();
+            
+            const list = document.getElementById('reviews-list');
+            if (resultRev.code === 200 && list) {
+                if (resultRev.data.length === 0) {
+                    list.innerHTML = `<p class="text-gray-500 italic text-sm">Este coach aún no tiene reseñas. ¡Sé el primero!</p>`;
+                } else {
+                    list.innerHTML = resultRev.data.map((r: any) => `
+                        <div class="bg-zinc-900/50 p-6 rounded-2xl border border-white/5">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-yellow-500 text-xs">${"⭐".repeat(r.stars)}</span>
+                                <span class="text-[9px] text-gray-600 uppercase font-bold">${new Date(r.createdAt).toLocaleDateString()}</span>
+                            </div>
+                            <p class="text-gray-300 text-sm italic">"${r.comment || 'Sin comentario'}"</p>
+                        </div>
+                    `).join('');
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    // 3. Lógica para enviar Review
+    document.getElementById('btn-send-review')?.addEventListener('click', async () => {
+        const stars = (document.getElementById('rev-stars') as HTMLSelectElement).value;
+        const comment = (document.getElementById('rev-comment') as HTMLTextAreaElement).value;
+
+        if (!user.id) return alert("Debes estar logueado para calificar.");
+
+        const res = await fetch('http://localhost:3000/reviews', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                stars: parseInt(stars),
+                comment,
+                coachId,
+                clientId: user.id
+            })
+        });
+
+        const data = await res.json();
+        alert(data.message);
+        if (data.code === 201) location.reload();
+    });
+
+    loadCoachDetail();
+</script>

@@ -1,0 +1,190 @@
+---
+import Layout from '../layouts/Layout.astro';
+import InputGroups from '../components/ImputGroups.astro'; // Asegúrate de que la ruta sea correcta (vi ImputGroups en tu imagen)
+---
+
+<Layout title="Mi Perfil Profesional | Gym App">
+  <div class="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-red-600 rounded-full blur-[150px] opacity-10"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600 rounded-full blur-[150px] opacity-10"></div>
+    </div>
+
+    <div class="w-full max-w-4xl bg-black/80 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-[3rem] shadow-2xl relative">
+        
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-black text-white italic uppercase tracking-tighter mb-2">
+                Perfil de <span class="text-red-600">Entrenador</span>
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base">
+                Esta información será visible para todos los clientes en la sección de ranking y detalles.
+            </p>
+        </header>
+
+        <form id="profile-form" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div class="space-y-6">
+                
+                <div class="flex flex-col items-center justify-center">
+                    <div class="w-40 h-40 rounded-full border-4 border-red-600/50 overflow-hidden bg-zinc-900 shadow-[0_0_30px_rgba(220,38,38,0.3)] mb-4 relative group">
+                        <img id="preview-image" src="https://via.placeholder.com/150" alt="Foto de perfil" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-xs font-bold text-white uppercase">Vista Previa</span>
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-500 uppercase tracking-widest">Foto Actual</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Nombre Público</label>
+                        <input type="text" id="name" class="w-full bg-zinc-900/50 border border-white/10 focus:border-red-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium" placeholder="Tu nombre completo">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">URL de Foto de Perfil</label>
+                        <input type="text" id="profileImage" class="w-full bg-zinc-900/50 border border-white/10 focus:border-red-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium text-sm" placeholder="https://ejemplo.com/mifoto.jpg">
+                        <p class="text-[10px] text-gray-500 mt-2 ml-1">* Pega un enlace directo a tu imagen (Imgur, Cloudinary, etc.)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Años de Experiencia / Títulos</label>
+                    <input type="text" id="experience" class="w-full bg-zinc-900/50 border border-white/10 focus:border-red-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium" placeholder="Ej: 5 años, Especialista en Hipertrofia">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Biografía / Sobre Mí</label>
+                    <textarea id="description" rows="8" class="w-full bg-zinc-900/50 border border-white/10 focus:border-red-600 rounded-xl px-5 py-4 text-white placeholder-gray-600 outline-none transition-all font-medium resize-none" placeholder="Describe tu metodología, logros y qué pueden esperar tus clientes de ti..."></textarea>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 mt-4">
+                <button type="submit" id="submit-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest py-5 rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_40px_rgba(220,38,38,0.6)] hover:scale-[1.01] transition-all transform active:scale-95 text-sm md:text-base">
+                    Guardar Cambios
+                </button>
+                <div id="msg-box" class="mt-4 text-center text-sm font-bold hidden p-3 rounded-lg"></div>
+            </div>
+
+        </form>
+
+        <div class="mt-8 text-center">
+             <a href="/dashboard" class="text-gray-500 hover:text-white text-xs font-black uppercase tracking-widest transition-colors border-b border-transparent hover:border-red-600 pb-1">← Volver al Panel</a>
+        </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+    // --- LÓGICA DE CARGA Y EDICIÓN ---
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const msgBox = document.getElementById('msg-box');
+    const imgInput = document.getElementById('profileImage') as HTMLInputElement;
+    const imgPreview = document.getElementById('preview-image') as HTMLImageElement;
+
+    // Redirección si no es coach
+    if (!token || user.role !== 'coach') {
+        window.location.href = '/dashboard';
+    }
+
+    // 1. Cargar datos actuales del usuario
+    async function loadProfile() {
+        try {
+            // Usamos el endpoint GET /users/:id que ahora devuelve datos extendidos
+            const res = await fetch(`http://localhost:3000/users/${user.id}`, {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}` 
+                }
+            });
+
+            const data = await res.json();
+
+            if (data.code === 200) {
+                const u = data.data;
+                (document.getElementById('name') as HTMLInputElement).value = u.name || '';
+                (document.getElementById('profileImage') as HTMLInputElement).value = u.profileImage || '';
+                (document.getElementById('experience') as HTMLInputElement).value = u.experience || '';
+                (document.getElementById('description') as HTMLTextAreaElement).value = u.description || '';
+
+                if (u.profileImage) {
+                    imgPreview.src = u.profileImage;
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    loadProfile();
+
+    // 2. Actualizar previsualización de imagen al escribir
+    imgInput?.addEventListener('input', () => {
+        const url = imgInput.value.trim();
+        if (url) imgPreview.src = url;
+        else imgPreview.src = 'https://via.placeholder.com/150';
+    });
+    
+    // Manejar error de imagen
+    imgPreview.onerror = function() {
+        this.src = 'https://via.placeholder.com/150?text=Error+URL';
+    };
+
+    // 3. Enviar Formulario (PUT)
+    document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+        
+        const name = (document.getElementById('name') as HTMLInputElement).value;
+        const profileImage = (document.getElementById('profileImage') as HTMLInputElement).value;
+        const experience = (document.getElementById('experience') as HTMLInputElement).value;
+        const description = (document.getElementById('description') as HTMLTextAreaElement).value;
+
+        btn.innerText = "Guardando...";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`http://localhost:3000/users/${user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name,
+                    profileImage,
+                    experience,
+                    description
+                })
+            });
+
+            const result = await res.json();
+
+            if (msgBox) {
+                msgBox.classList.remove('hidden');
+                if (result.code === 200) {
+                    msgBox.className = "mt-4 text-center text-sm font-bold p-3 rounded-lg bg-green-500/20 text-green-400 border border-green-500/50";
+                    msgBox.innerText = "✅ Perfil actualizado correctamente";
+                    
+                    // Actualizar localStorage para reflejar cambios en header si cambió el nombre
+                    user.name = name;
+                    user.profileImage = profileImage; // Opcional guardar esto en local
+                    localStorage.setItem('user', JSON.stringify(user));
+
+                } else {
+                    msgBox.className = "mt-4 text-center text-sm font-bold p-3 rounded-lg bg-red-500/20 text-red-400 border border-red-500/50";
+                    msgBox.innerText = "❌ Error: " + result.message;
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            btn.innerText = "GUARDAR CAMBIOS";
+            btn.disabled = false;
+        }
+    });
+</script>

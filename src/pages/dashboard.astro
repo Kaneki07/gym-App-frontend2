@@ -56,7 +56,7 @@ import Layout from '../layouts/Layout.astro';
             <span class="text-3xl text-white">🛡️</span>
         </div>
         <h3 class="text-2xl font-black text-white mb-2 uppercase italic tracking-tighter">Panel Coach</h3>
-        <p class="text-gray-400 text-xs leading-relaxed mb-6">Herramientas exclusivas para entrenadores.</p>
+        <p class="text-gray-400 text-xs leading-relaxed mb-6">Herramientas exclusivas para gestionar clientes.</p>
         <div class="flex flex-col gap-3">
             <a href="/dietasAdmin" class="w-full text-center bg-gray-900 hover:bg-red-600 border border-gray-700 hover:border-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1">
                 Subir Dietas 🍎
@@ -67,12 +67,35 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </div>
 
+      <a href="/perfilCoach" id="coach-profile-card" class="hidden group bg-zinc-900/80 border border-yellow-500/50 p-8 rounded-[2.5rem] shadow-[0_0_30px_rgba(234,179,8,0.1)] hover:shadow-[0_0_50px_rgba(234,179,8,0.3)] transition-all duration-500 relative overflow-hidden hover:-translate-y-2">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-500 rounded-full blur-[60px] opacity-10 group-hover:opacity-30 transition-opacity"></div>
+        <div class="w-14 h-14 bg-yellow-600/20 border border-yellow-500/50 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(234,179,8,0.2)] group-hover:bg-yellow-600 group-hover:text-white transition-colors">
+            <span class="text-3xl">🆔</span>
+        </div>
+        <h3 class="text-2xl font-black text-white mb-2 uppercase italic tracking-tighter">Mi Perfil Pro</h3>
+        <p class="text-gray-400 text-xs leading-relaxed mb-6">Gestiona tu imagen pública, biografía y experiencia visible para los clientes.</p>
+        <div class="mt-auto flex items-center text-[10px] font-black text-yellow-500 uppercase tracking-widest group-hover:text-white transition-colors">
+            Editar Perfil <span class="ml-2">→</span>
+        </div>
+      </a>
+
+      <a href="/coaches" class="group bg-gray-900/40 border border-blue-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(37,99,235,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(37,99,235,0.3)] hover:border-blue-600/60 transition-all duration-500 hover:-translate-y-2">
+        <div class="w-14 h-14 bg-blue-900/20 border border-blue-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:shadow-[0_0_20px_rgba(37,99,235,0.6)] transition-all duration-500">
+            <span class="text-3xl group-hover:scale-110 transition-transform">🏆</span>
+        </div>
+        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Nuestros Coaches</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Encuentra al mentor perfecto para guiar tu transformación física y técnica.</p>
+        <div class="mt-6 flex items-center text-[10px] font-black text-blue-500 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+            Explorar Staff <span class="ml-2">→</span>
+        </div>
+      </a>
+
       <a href="/rutinaPersonal" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
         <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
             <span class="text-3xl group-hover:scale-110 transition-transform">⚡</span>
         </div>
         <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Plan de Entrenamiento</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Accede a tu programación técnica personalizada diseñada exclusivamente por tu coach para maximizar tu evolución física.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Accede a tu programación técnica personalizada.</p>
         <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
             Ver mi rutina <span class="ml-2">→</span>
         </div>
@@ -83,7 +106,7 @@ import Layout from '../layouts/Layout.astro';
             <span class="text-3xl group-hover:scale-110 transition-transform">💪</span>
         </div>
         <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Explorar Rutinas</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Entrenamientos de élite prediseñados para romper tus límites físicos en cualquier momento.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Entrenamientos de élite prediseñados.</p>
         <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
             Entrar ahora <span class="ml-2">→</span>
         </div>
@@ -94,7 +117,7 @@ import Layout from '../layouts/Layout.astro';
             <span class="text-3xl group-hover:scale-110 transition-transform">🍎</span>
         </div>
         <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Nutrición</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Combustible de precisión para maximizar tu recuperación muscular y rendimiento energético.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Combustible de precisión para tu recuperación.</p>
         <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
             Ver dietas <span class="ml-2">→</span>
         </div>
@@ -105,7 +128,7 @@ import Layout from '../layouts/Layout.astro';
             <span class="text-3xl group-hover:scale-110 transition-transform">📊</span>
         </div>
         <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Biometría</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Monitorea tu porcentaje de grasa y evolución composición corporal en tiempo real.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Monitorea tu porcentaje de grasa.</p>
         <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
             Analizar <span class="ml-2">→</span>
         </div>
@@ -116,7 +139,7 @@ import Layout from '../layouts/Layout.astro';
             <span class="text-3xl group-hover:scale-110 transition-transform">📏</span>
         </div>
         <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Medidas</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Registra la evolución de tus circunferencias y progreso físico antropométrico.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Registra la evolución de tus circunferencias.</p>
         <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
             Registrar <span class="ml-2">→</span>
         </div>
@@ -138,15 +161,17 @@ import Layout from '../layouts/Layout.astro';
     
     try {
         if (userStr) user = JSON.parse(userStr);
-        console.log("Rol detectado:", user.role);
     } catch (e) {
         console.error("Error al leer datos del usuario", e);
     }
 
-    // Mostrar panel si es Coach
-    const adminPanel = document.getElementById('admin-panel-card');
-    if (adminPanel && user.role && user.role.toLowerCase() === 'coach') {
-        adminPanel.classList.remove('hidden');
+    // --- LÓGICA DE ROLES PARA COACH ---
+    if (user.role && user.role.toLowerCase() === 'coach') {
+        const adminPanel = document.getElementById('admin-panel-card');
+        const profileCard = document.getElementById('coach-profile-card');
+        
+        if (adminPanel) adminPanel.classList.remove('hidden');
+        if (profileCard) profileCard.classList.remove('hidden');
     }
 
     const welcomeName = document.getElementById('welcome-name');
@@ -154,6 +179,7 @@ import Layout from '../layouts/Layout.astro';
       welcomeName.textContent = user.name.split(' ')[0];
     }
 
+    // --- ESTADO DEL USUARIO ---
     const statusDisplay = document.getElementById('current-status');
     const menuBtn = document.getElementById('open-status-menu');
     const dropdown = document.getElementById('status-dropdown');
