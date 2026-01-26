@@ -4,12 +4,57 @@ import Layout from '../layouts/Layout.astro';
 // Base de datos actualizada con referencias a GIFs
 // Nota: Coloca tus archivos en public/gifs/ o usa URLs completas
 const ejerciciosPorMusculo = {
-  Pecho: [
-    { n: "Press de Banca", g: "pressbanca.gif" },
-    { n: "Aperturas con mancuernas", g: "apertura-con-mancuernas.gif" },
-    { n: "Flexiones", g: "flexiones.gif" },
-    { n: "Press inclinado", g: "pressinclinado.gif" }
-  ],
+ Pecho: [
+    // Ejercicios originales
+    { n: "Press de Banca", g: "chest/pressbanca.gif" },
+    { n: "Aperturas con mancuernas", g: "chest/Dumbbell-Chest-Fly.gif" },
+    { n: "Flexiones", g: "chest/flexiones.gif" },
+    { n: "Press inclinado", g: "chest/pressinclinado.gif" },
+    { n: "Assisted Dip", g: "chest/Dips.gif" },
+
+    // Nuevos ejercicios agregados
+    { n: "Band-Assisted Bench Press", g: "chest/bench-with-band-assistance.gif" },
+    { n: "Bar Dip", g: "chest/Dips.gif" },
+    { n: "Bench Press Against Band", g: "chest/bench-with-band-assistance.gif" },
+    { n: "Board Press", g: "chest/board-bench-press.gif" },
+    { n: "Cable Chest Press", g: "chest/cable-chest-press.gif" },
+    { n: "Clap Push-Up", g: "chest/clap-push-up.gif" },
+    { n: "Close-Grip Bench Press", g: "chest/Close-grip-bench-press.gif" },
+    { n: "Close-Grip Feet-Up Bench Press", g: "chest/Close-Grip-Feet-Up-Bench-Press.gif" },
+    { n: "Cobra Push-Up", g: "chest/Cobra-push-up.gif" },
+    { n: "Decline Bench Press", g: "chest/Decline-Bench-Press.gif" },
+    { n: "Decline Push-Up", g: "chest/Decline-push-up.gif" },
+    { n: "Dumbbell Chest Fly", g: "chest/Dumbbell-Chest-Fly.gif" },
+    { n: "Dumbbell Chest Press", g: "chest/Dumbbell-Chest-Press.gif" },
+    { n: "Dumbbell Decline Chest Press", g: "chest/dumbbell-decline-chest-press.gif" },
+    { n: "Dumbbell Floor Press", g: "chest/dumbbell-floor-press.gif" },
+    { n: "Dumbbell Pullover", g: "chest/Dumbbell-Pullover.gif" },
+    { n: "Feet-Up Bench Press", g: "chest/Feet-Up-Bench-Press.gif" },
+    { n: "Floor Press", g: "chest/Floor-Press.gif" },
+    { n: "Incline Bench Press", g: "chest/Incline-Bench-Press.gif" },
+    { n: "Incline Dumbbell Press", g: "chest/Dumbbell-Incline-Press.gif" },
+    { n: "Incline Push-Up", g: "chest/incline-push-up-exercise-technique.gif" },
+    { n: "Kettlebell Floor Press", g: "chest/kettlebell-floorpress.gif" },
+    { n: "Kneeling Incline Push-Up", g: "chest/Kneeling-incline-push-up.gif" }, // Se mantiene el error 'indine' del archivo
+    { n: "Kneeling Push-Up", g: "chest/Kneeling-push-ups.gif" },
+    { n: "Machine Chest Fly", g: "chest/machine-chest-fly.gif" },
+    { n: "Machine Chest Press", g: "chest/machine-chest-press.gif" },
+    { n: "Medicin Ball Chest Pass", g: "chest/medicin-ball-chest-pass.gif" },
+    { n: "Pec Deck", g: "chest/pec-deck.gif" },
+    { n: "Pin Bench Press", g: "chest/pin-bench-press.gif" },
+    { n: "Plank to Push-Up", g: "chest/plank-to-push-up.gif" },
+    { n: "Push-Up", g: "chest/Push-up.gif" },
+    { n: "Push-Up Against Wall", g: "chest/pushups-against-wall.gif" },
+    { n: "Push-Ups With Feet in Rings", g: "chest/Push-ups-with-feet-in-rings.gif" },
+    { n: "Resistance Band Chest Fly", g: "chest/resistance-band-chest-fly-ezgif.gif" },
+    { n: "Ring Dip", g: "chest/dips-i-ringar.gif" },
+    { n: "Seated Cable Chest Fly", g: "chest/seated-cable-chest-fly.gif" },
+    { n: "Smith Machine Bench Press", g: "chest/smith-machine-bench-press.gif" },
+    { n: "Smith Machine Incline Bench Press", g: "chest/smith-machine-incline-bench-press.gif" },
+    { n: "Smith Machine Reverse Grip Bench Press", g: "chest/Smithmachinereverse-grip-bench-press.gif" },
+    { n: "Standing Cable Chest Fly", g: "chest/standing-cable-chest-fly.gif" },
+    { n: "Standing Resistance Band Chest Fly", g: "chest/standing-resistance-band-chest-fly.gif" }
+],
   Espalda: [
     { n: "Dominadas", g: "dominadas.gif" },
     { n: "Remo con barra", g: "remoconbarra.gif" },
@@ -28,9 +73,28 @@ const ejerciciosPorMusculo = {
     { n: "Curl concentrado", g: "curl-concentrado.gif" }
   ],
   Tríceps: [
-    { n: "Extensiones en polea", g: "extensiones-triceps.gif" },
-    { n: "Press francés", g: "press-frances.gif" },
-    { n: "Fondos de tríceps", g: "fondos.gif" }
+    // Originales ajustados a archivos reales
+    { n: "Press francés", g: "triceps/lying-triceps-extension-with-ez-bar.gif" },
+    { n: "Fondos de tríceps", g: "triceps/bench-dip.gif" },
+
+    // Nuevos ejercicios agregados según tu lista e imágenes
+    { n: "Barbell Standing Triceps Extension", g: "triceps/Barbell-Standing-Triceps-Extension.gif" },
+    { n: "Barbell Incline Triceps Extension", g: "triceps/Incline-Bench-SkullCrushers.gif" },
+    { n: "Barbell Lying Triceps Extension", g: "triceps/Barbell-Lying-Tricep-Extension.gif" },
+    { n: "Bench Dip", g: "triceps/bench-dip.gif" },
+    { n: "Crossbody Cable Triceps Extension", g: "triceps/Crossbody-Cable-Triceps-Extension.gif" },
+    { n: "Close-Grip Push-Up", g: "triceps/close-grip-push-up.gif" },
+    { n: "Dumbbell Lying Triceps Extension", g: "triceps/Lying-Dumbbell-Triceps-Extension.gif" },
+    { n: "Dumbbell Standing Triceps Extension", g: "triceps/Dumbbell-Standing-Triceps-Extension.gif" },
+    { n: "EZ Bar Lying Triceps Extension", g: "triceps/lying-triceps-extension-with-ez-bar.gif" },
+    { n: "Machine Overhead Triceps Extension", g: "triceps/machine-overhead-tricep-extension.gif" },
+    { n: "Overhead Cable Triceps Extension (Lower Position)", g: "triceps/overhead-tricep-extension-lower-p.gif" },
+    { n: "Overhead Cable Triceps Extension (Upper Position)", g: "triceps/Overhead-Cable-Triceps-Extension.gif" },
+    { n: "Smith Machine Skull Crushers", g: "triceps/smith-machine-skull-crushers.gif" },
+    { n: "Tate Press", g: "triceps/tate-press.gif" },
+    { n: "Tricep Bodyweight Extension", g: "triceps/Bodyweight-triceps-extension.gif" },
+    { n: "Tricep Pushdown With Bar", g: "triceps/triceps-pushdown-with-straight-ha.gif" },
+    { n: "Tricep Pushdown With Rope", g: "triceps/triceps-pushdown-with-rope.gif" }
   ],
   Cuádriceps: [
     { n: "Sentadillas", g: "sentadilla.gif" },
@@ -48,7 +112,45 @@ const ejerciciosPorMusculo = {
     { n: "Elevación de talones sentado", g: "gemelos-sentado.gif" },
     { n: "Elevación de talones de pie", g: "gemelos-pie.gif" },
     { n: "Elevación de talones en prensa", g: "pantorrilla-sentado.gif" },
-  ]
+  ],
+  Gluteos: [
+    // Originales ajustados a archivos reales
+    { n: "Puente de glúteos", g: "glute/glutebridge.gif" },
+    { n: "Patada de glúteo en polea", g: "glute/cable-glute-kickback.gif" },
+    { n: "Hip Thrust", g: "glute/Hip-thrust.gif" },
+
+    // Nuevos ejercicios agregados
+    { n: "Banded Side Kicks", g: "glute/Banded-Side-Kick.gif" },
+    { n: "Cable Glute Kickback", g: "glute/cable-glute-kickback.gif" },
+    { n: "Cable Pull Through", g: "glute/cable-pull-through.gif" },
+    { n: "Cable Machine Hip Abduction", g: "glute/cable-hip-abduction.gif" },
+    { n: "Clamshells", g: "glute/clamshell.gif" },
+    { n: "Cossack Squat", g: "glute/cossack-squat.gif" },
+    { n: "Death March with Dumbbells", g: "glute/dumbbell-deathmarch.gif" },
+    { n: "Donkey Kicks", g: "glute/donkey-kicks.gif" },
+    { n: "Dumbbell Romanian Deadlift", g: "glute/romanian-deadlift-with-dumbbells.gif" },
+    { n: "Dumbbell Frog Pumps", g: "glute/Dumbbell-frog-pump.gif" },
+    { n: "Fire Hydrants", g: "glute/Fire-Hydrants.gif" },
+    { n: "Frog Pumps", g: "glute/Frog-pump.gif" },
+    { n: "Glute Bridge", g: "glute/glutebridge.gif" },
+    { n: "Hip Abduction Against Band", g: "glute/banded-hip-abduction.gif" },
+    { n: "Hip Abduction Machine", g: "glute/hip-abduction-machine.gif" },
+    { n: "Hip Thrust Machine", g: "glute/hip-thrust-machine.gif" },
+    { n: "Hip Thrust With Band Around Knees", g: "glute/Hip-thrust-with-band-around-knees.gif" },
+    { n: "Kettlebell Windmill", g: "glute/kettlebell-windmill.gif" },
+    { n: "Lateral Walk With Band", g: "glute/Banded-Side-Step.gif" },
+    { n: "Machine Glute Kickbacks", g: "glute/machine-glute-kickback.gif" },
+    { n: "One-Legged Glute Bridge", g: "glute/One-legged-glute-bridge.gif" },
+    { n: "One-Legged Hip Thrust", g: "glute/One-Legged-Hip-Thrust.gif" },
+    { n: "Reverse Hyperextension", g: "glute/reverse-hyperextension.gif" },
+    { n: "Romanian Deadlift", g: "glute/Romanian-deadlift.gif" },
+    { n: "Smith Machine Hip Thrust", g: "glute/smith-machine-hip-thrust.gif" },
+    { n: "Single Leg Romanian Deadlift", g: "glute/Single-leg-romanian-deadlift.gif" },
+    { n: "Standing Hip Abduction Against Band", g: "glute/Band-Seated-Hip-Abduction.gif" },
+    { n: "Standing Glute Kickback in Machine", g: "glute/Standing-glute-kickback-in-machine.gif" },
+    { n: "Standing Glute Push Down", g: "glute/single-leg-glute-push-down.gif" },
+    { n: "Step Up", g: "glute/step-up-exercise.gif" }
+  ],
 };
 
 const musculos = Object.keys(ejerciciosPorMusculo);
