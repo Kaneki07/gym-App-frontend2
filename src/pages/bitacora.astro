@@ -1,0 +1,172 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Bitácora de Entrenamiento | Gym App">
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <header class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div>
+        <a href="/dashboard" class="text-red-600 text-[10px] font-black uppercase tracking-[0.3em] mb-4 flex items-center gap-2 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+            </svg>
+            Volver al panel
+        </a>
+        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white italic">
+          Bitácora <span class="text-red-600 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">Semanal</span>
+        </h1>
+      </div>
+      
+      <div class="flex gap-4">
+        <button id="btn-save" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-2xl font-black uppercase italic tracking-tighter transition-all shadow-[0_0_20px_rgba(220,38,38,0.3)] active:scale-95">
+            Guardar Progreso
+        </button>
+      </div>
+    </header>
+
+    <div id="bitacora-container" class="space-y-6">
+        <div class="text-white text-center py-20 opacity-50 italic">Cargando tu bitácora...</div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+    const API_URL = import.meta.env.PUBLIC_API_BASE_URL; // Ajusta a tu URL de backend
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    
+    if (!user) window.location.href = '/login';
+
+    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    let bitacoraData = {};
+
+    // Inicializar estructura vacía
+    days.forEach(day => {
+        bitacoraData[day] = [];
+    });
+
+    const container = document.getElementById('bitacora-container');
+
+    async function loadBitacora() {
+        try {
+            const res = await fetch(`${API_URL}/bitacora/${user.id}`);
+            const result = await res.json();
+            
+            if (result.data && result.data.content) {
+                bitacoraData = result.data.content;
+            }
+            renderBitacora();
+        } catch (error) {
+            console.error("Error cargando bitácora", error);
+            renderBitacora();
+        }
+    }
+
+    function renderBitacora() {
+        if (!container) return;
+        container.innerHTML = '';
+
+        days.forEach(day => {
+            const daySection = document.createElement('div');
+            daySection.className = "bg-gray-900/40 border border-white/5 rounded-[2rem] overflow-hidden";
+            
+            daySection.innerHTML = `
+                <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+                    <h3 class="text-xl font-black text-white uppercase italic tracking-tighter">${day}</h3>
+                    <button onclick="window.addExercise('${day}')" class="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-white transition-colors">
+                        + Añadir Ejercicio
+                    </button>
+                </div>
+                <div id="list-${day}" class="p-6 space-y-4">
+                    ${bitacoraData[day].length === 0 ? '<p class="text-gray-600 text-xs italic">No hay ejercicios registrados.</p>' : ''}
+                </div>
+            `;
+
+            container.appendChild(daySection);
+            renderExercises(day);
+        });
+    }
+
+    function renderExercises(day) {
+        const list = document.getElementById(`list-${day}`);
+        if (!list) return;
+        list.innerHTML = '';
+
+        bitacoraData[day].forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = "grid grid-cols-12 gap-4 items-center bg-black/40 p-4 rounded-xl border border-white/5";
+            div.innerHTML = `
+                <div class="col-span-6 md:col-span-7">
+                    <input type="text" placeholder="Ejercicio" value="${item.name}" 
+                        onchange="window.updateField('${day}', ${index}, 'name', this.value)"
+                        class="w-full bg-transparent border-none text-white font-bold placeholder:text-gray-700 focus:ring-0">
+                </div>
+                <div class="col-span-2 md:col-span-2">
+                    <input type="number" placeholder="Ser" value="${item.series}" 
+                        onchange="window.updateField('${day}', ${index}, 'series', this.value)"
+                        class="w-full bg-gray-900/50 border-none rounded-lg text-red-500 font-black text-center focus:ring-1 focus:ring-red-600">
+                </div>
+                <div class="col-span-2 md:col-span-2">
+                    <input type="number" placeholder="Rep" value="${item.reps}" 
+                        onchange="window.updateField('${day}', ${index}, 'reps', this.value)"
+                        class="w-full bg-gray-900/50 border-none rounded-lg text-white font-black text-center focus:ring-1 focus:ring-red-600">
+                </div>
+                <div class="col-span-2 md:col-span-1 flex justify-end">
+                    <button onclick="window.removeExercise('${day}', ${index})" class="text-gray-700 hover:text-red-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    // Funciones globales para los eventos inline
+    (window as any).addExercise = (day) => {
+        bitacoraData[day].push({ name: '', series: '', reps: '' });
+        renderBitacora();
+    };
+
+    (window as any).removeExercise = (day, index) => {
+        bitacoraData[day].splice(index, 1);
+        renderBitacora();
+    };
+
+    (window as any).updateField = (day, index, field, value) => {
+        bitacoraData[day][index][field] = value;
+    };
+
+    // GUARDAR EN BD
+    document.getElementById('btn-save')?.addEventListener('click', async () => {
+        const btn = document.getElementById('btn-save') as HTMLButtonElement;
+        const originalText = btn.textContent;
+        
+        try {
+            btn.textContent = 'Guardando...';
+            btn.disabled = true;
+
+            const res = await fetch(`${API_URL}/bitacora/${user.id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: bitacoraData })
+            });
+
+            if (res.ok) {
+                alert('¡Progreso semanal guardado con éxito!');
+            } else {
+                alert('Error al guardar en el servidor');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error de conexión');
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    });
+
+    // Carga inicial
+    loadBitacora();
+</script>
