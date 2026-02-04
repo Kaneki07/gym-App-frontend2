@@ -31,7 +31,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-    const API_URL = import.meta.env.PUBLIC_API_BASE_URL; // Ajusta a tu URL de backend
+    const API_URL = import.meta.env.PUBLIC_API_BASE_URL; 
     const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
     
@@ -39,6 +39,7 @@ import Layout from '../layouts/Layout.astro';
 
     const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
     let bitacoraData = {};
+    let isUpdate = false; // Variable para controlar el método (POST o PUT)
 
     // Inicializar estructura vacía
     days.forEach(day => {
@@ -52,8 +53,10 @@ import Layout from '../layouts/Layout.astro';
             const res = await fetch(`${API_URL}/bitacora/${user.id}`);
             const result = await res.json();
             
+            // Si result.data existe, significa que ya hay un registro previo
             if (result.data && result.data.content) {
                 bitacoraData = result.data.content;
+                isUpdate = true; 
             }
             renderBitacora();
         } catch (error) {
@@ -123,7 +126,6 @@ import Layout from '../layouts/Layout.astro';
         });
     }
 
-    // Funciones globales para los eventos inline
     (window as any).addExercise = (day) => {
         bitacoraData[day].push({ name: '', series: '', reps: '' });
         renderBitacora();
@@ -138,25 +140,29 @@ import Layout from '../layouts/Layout.astro';
         bitacoraData[day][index][field] = value;
     };
 
-    // GUARDAR EN BD
+    // GUARDAR O ACTUALIZAR EN BD
     document.getElementById('btn-save')?.addEventListener('click', async () => {
         const btn = document.getElementById('btn-save') as HTMLButtonElement;
         const originalText = btn.textContent;
         
+        // Decidir método basado en si ya existe información
+        const method = isUpdate ? 'PUT' : 'POST';
+
         try {
             btn.textContent = 'Guardando...';
             btn.disabled = true;
 
             const res = await fetch(`${API_URL}/bitacora/${user.id}`, {
-                method: 'POST',
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ content: bitacoraData })
             });
 
             if (res.ok) {
-                alert('¡Progreso semanal guardado con éxito!');
+                alert(`¡Progreso semanal ${isUpdate ? 'actualizado' : 'guardado'} con éxito!`);
+                isUpdate = true; // Si fue un POST exitoso, las siguientes serán PUT
             } else {
-                alert('Error al guardar en el servidor');
+                alert('Error al procesar la solicitud en el servidor');
             }
         } catch (error) {
             console.error(error);
@@ -167,6 +173,5 @@ import Layout from '../layouts/Layout.astro';
         }
     });
 
-    // Carga inicial
     loadBitacora();
 </script>
