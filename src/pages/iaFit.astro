@@ -76,7 +76,7 @@ import Layout from '../layouts/Layout.astro';
 <script>
     // Obtenemos la URL base desde las variables de entorno de Astro
     // En el script de iaFit.astro
-    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || 'https://gym-app-backend-2-pv91.onrender.com';
+    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
     console.log("Conectando a:", API_BASE_URL); // Esto te dirá en la consola si ya no es undefined
 
@@ -129,7 +129,7 @@ import Layout from '../layouts/Layout.astro';
     formData.append('image', file);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/ia/analyze`, {
+      const response = await fetch(`${API_BASE_URL}/analyze`, {
         method: 'POST',
         body: formData,
         // Nota: No establecemos el Content-Type manualmente, 
