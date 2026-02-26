@@ -74,8 +74,11 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  // Obtenemos la URL base desde las variables de entorno de Astro
-  const API_BASE_URL = process.env.PUBLIC_API_BASE_URL;
+    // Obtenemos la URL base desde las variables de entorno de Astro
+    // En el script de iaFit.astro
+    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || 'https://gym-app-backend-2-pv91.onrender.com';
+
+    console.log("Conectando a:", API_BASE_URL); // Esto te dirá en la consola si ya no es undefined
 
   const fileInput = document.getElementById('file-upload') as HTMLInputElement;
   const dropZone = document.getElementById('drop-zone');
