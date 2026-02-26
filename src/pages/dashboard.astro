@@ -3,156 +3,149 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Panel de Control | Gym App">
-  <div class="max-w-7xl mx-auto px-6 py-12">
-    <header class="mb-12">
-      <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white italic">
-        Bienvenido, <span class="text-red-600 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]" id="welcome-name">Atleta</span>
-      </h1>
-      
-      <div class="mt-8 flex items-center gap-4">
-        <div class="flex flex-col">
-            <span class="text-[10px] text-gray-500 font-black uppercase tracking-[0.3em] mb-2 ml-1">Tu objetivo actual</span>
-            <div class="flex items-center gap-4">
-                <span id="current-status" class="text-white font-black uppercase italic tracking-tighter text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">
-                    Cargando...
-                </span>
-                
-                <div class="relative inline-block text-left" id="status-menu-container">
-                    <button 
-                        id="open-status-menu"
-                        class="bg-gray-900/50 hover:bg-red-600 text-gray-400 hover:text-white px-5 py-2 rounded-full border border-red-600/30 text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(220,38,38,0.1)] active:scale-95"
-                    >
-                        Cambiar estado
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
+  <div class="fixed inset-0 z-0 pointer-events-none bg-[url('/grid-pattern.png')] opacity-[0.03] mix-blend-overlay"></div>
 
-                    <div 
-                        id="status-dropdown" 
-                        class="hidden absolute left-0 mt-3 w-56 bg-black border border-red-600/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(220,38,38,0.2)] z-50 overflow-hidden backdrop-blur-xl"
-                    >
-                        <button class="status-option w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors border-b border-gray-900" data-status="Mantenimiento">
-                            Mantenimiento
-                        </button>
-                        <button class="status-option w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors border-b border-gray-900" data-status="Fase de Definición">
-                            Fase de Definición
-                        </button>
-                        <button class="status-option w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-red-600 hover:text-white transition-colors" data-status="Fase de Volumen">
-                            Fase de Volumen
-                        </button>
-                    </div>
-                </div>
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    
+    <header class="mb-10 p-6 rounded-3xl bg-zinc-900/60 border border-zinc-800/50 backdrop-blur-md shadow-xl relative overflow-hidden">
+       <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600/0 via-red-600/50 to-red-600/0"></div>
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
+        <div>
+          <h1 class="text-3xl md:text-5xl font-black uppercase italic tracking-tighter text-white">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Bienvenido,</span>
+            <br class="md:hidden">
+            <span class="text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.8)]" id="welcome-name">Atleta</span>
+          </h1>
+        </div>
+        
+        <div class="relative inline-block text-left" id="status-menu-container">
+          <p class="text-[9px] text-red-400/80 font-black uppercase tracking-[0.2em] mb-2 text-right">Estado del Sistema</p>
+          <button 
+            id="open-status-menu"
+            class="group flex items-center justify-between gap-4 bg-black hover:bg-zinc-900 text-white pl-4 pr-3 py-3 rounded-xl border-l-4 border-red-600 shadow-[0_5px_15px_-5px_rgba(0,0,0,1)] active:scale-95 transition-all min-w-[200px]"
+          >
+            <div class="flex flex-col items-start">
+                <span id="current-status" class="font-black italic uppercase text-sm tracking-tight">Cargando...</span>
+                <span class="text-[9px] text-gray-500 font-medium leading-none mt-1">Click para cambiar</span>
             </div>
+            <div class="w-8 h-8 bg-red-600/20 rounded-lg flex items-center justify-center group-hover:bg-red-600 transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+          </button>
+
+          <div 
+            id="status-dropdown" 
+            class="hidden absolute right-0 mt-2 w-64 bg-black/95 border border-red-600/30 rounded-xl shadow-[0_0_30px_rgba(220,38,38,0.15)] z-50 overflow-hidden backdrop-blur-xl"
+          >
+            <button class="status-option w-full text-left px-5 py-4 text-xs font-black uppercase tracking-wider text-gray-400 hover:bg-red-600 hover:text-white transition-all border-b border-zinc-900 flex items-center justify-between group" data-status="Mantenimiento">
+              <span>Mantenimiento</span>
+              <span class="opacity-0 group-hover:opacity-100 transition-opacity">⚡</span>
+            </button>
+            <button class="status-option w-full text-left px-5 py-4 text-xs font-black uppercase tracking-wider text-gray-400 hover:bg-red-600 hover:text-white transition-all border-b border-zinc-900 flex items-center justify-between group" data-status="Fase de Definición">
+              <span>Fase de Definición</span>
+              <span class="opacity-0 group-hover:opacity-100 transition-opacity">🔥</span>
+            </button>
+            <button class="status-option w-full text-left px-5 py-4 text-xs font-black uppercase tracking-wider text-gray-400 hover:bg-red-600 hover:text-white transition-all flex items-center justify-between group" data-status="Fase de Volumen">
+              <span>Fase de Volumen</span>
+              <span class="opacity-0 group-hover:opacity-100 transition-opacity">🦍</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-fr">
       
-      <div id="admin-panel-card" class="hidden group bg-black/80 border border-red-500 p-8 rounded-[2.5rem] shadow-[0_0_30px_rgba(220,38,38,0.2)] hover:shadow-[0_0_50px_rgba(220,38,38,0.4)] transition-all duration-500 relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-red-600 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
-        <div class="w-14 h-14 bg-red-600 border border-white/20 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(220,38,38,0.5)]">
-            <span class="text-3xl text-white">🛡️</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-2 uppercase italic tracking-tighter">Panel Coach</h3>
-        <p class="text-gray-400 text-xs leading-relaxed mb-6">Herramientas exclusivas para gestionar clientes.</p>
-        <div class="flex flex-col gap-3">
-            <a href="/dietasAdmin" class="w-full text-center bg-gray-900 hover:bg-red-600 border border-gray-700 hover:border-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1">
-                Subir Dietas 🍎
-            </a>
-            <a href="/rutinasAdmin" class="w-full text-center bg-gray-900 hover:bg-red-600 border border-gray-700 hover:border-red-500 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:-translate-y-1">
-                Subir Rutinas 💪
-            </a>
+      <div id="admin-panel-card" class="hidden md:col-span-2 lg:col-span-3 relative overflow-hidden rounded-2xl bg-gradient-to-r from-black to-zinc-900 border-l-[6px] border-red-600 shadow-2xl hover:shadow-red-600/20 transition-all duration-300 group hover:-translate-y-1">
+        <div class="absolute -right-10 -bottom-10 text-[150px] opacity-5 select-none group-hover:scale-110 transition-transform duration-500">🛡️</div>
+        <div class="p-8 relative z-10 h-full flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+            <div class="flex-1">
+                <div class="flex items-center gap-4 mb-2">
+                    <span class="text-3xl drop-shadow-[0_0_10px_rgba(220,38,38,0.8)]">🛡️</span>
+                    <h3 class="text-2xl font-black text-white uppercase italic tracking-tighter">Centro de Comando Coach</h3>
+                </div>
+                <p class="text-gray-400 text-sm font-medium max-w-lg">Acceso prioritario a herramientas de gestión de atletas y programación.</p>
+            </div>
+            <div class="flex flex-wrap gap-3 w-full md:w-auto">
+                <a href="/dietasAdmin" class="px-6 py-3 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/30 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex-1 md:flex-none text-center">
+                    Subir Dietas 🍎
+                </a>
+                <a href="/rutinasAdmin" class="px-6 py-3 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/30 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex-1 md:flex-none text-center">
+                    Subir Rutinas 💪
+                </a>
+            </div>
         </div>
       </div>
 
-      <a href="/perfilCoach" id="coach-profile-card" class="hidden group bg-zinc-900/80 border border-yellow-500/50 p-8 rounded-[2.5rem] shadow-[0_0_30px_rgba(234,179,8,0.1)] hover:shadow-[0_0_50px_rgba(234,179,8,0.3)] transition-all duration-500 relative overflow-hidden hover:-translate-y-2">
-        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-500 rounded-full blur-[60px] opacity-10 group-hover:opacity-30 transition-opacity"></div>
-        <div class="w-14 h-14 bg-yellow-600/20 border border-yellow-500/50 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(234,179,8,0.2)] group-hover:bg-yellow-600 group-hover:text-white transition-colors">
-            <span class="text-3xl">🆔</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-2 uppercase italic tracking-tighter">Mi Perfil Pro</h3>
-        <p class="text-gray-400 text-xs leading-relaxed mb-6">Gestiona tu imagen pública, biografía y experiencia visible para los clientes.</p>
-        <div class="mt-auto flex items-center text-[10px] font-black text-yellow-500 uppercase tracking-widest group-hover:text-white transition-colors">
-            Editar Perfil <span class="ml-2">→</span>
-        </div>
-      </a>
-
-      <a href="/coaches" class="group bg-gray-900/40 border border-blue-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(37,99,235,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(37,99,235,0.3)] hover:border-blue-600/60 transition-all duration-500 hover:-translate-y-2">
-        <div class="w-14 h-14 bg-blue-900/20 border border-blue-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:shadow-[0_0_20px_rgba(37,99,235,0.6)] transition-all duration-500">
-            <span class="text-3xl group-hover:scale-110 transition-transform">🏆</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Nuestros Coaches</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Encuentra al mentor perfecto para guiar tu transformación física y técnica.</p>
-        <div class="mt-6 flex items-center text-[10px] font-black text-blue-500 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Explorar Staff <span class="ml-2">→</span>
+      <a href="/perfilCoach" id="coach-profile-card" class="hidden relative overflow-hidden rounded-2xl bg-gradient-to-br from-black to-zinc-900 border-l-[6px] border-yellow-500 shadow-lg hover:shadow-yellow-500/20 transition-all duration-300 group hover:-translate-y-1">
+        <div class="absolute -right-6 -bottom-6 text-9xl opacity-5 select-none group-hover:rotate-12 transition-transform duration-500 text-yellow-500">🆔</div>
+        <div class="p-6 relative z-10 h-full flex flex-col">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-black text-white uppercase italic tracking-tighter leading-none">Mi Perfil <br>Pro</h3>
+                <div class="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-xl text-yellow-500 group-hover:bg-yellow-500 group-hover:text-black transition-all">
+                    🆔
+                </div>
+            </div>
+            <p class="text-gray-500 text-xs font-medium mb-8 leading-relaxed">Gestiona tu imagen pública visible para clientes.</p>
+            <div class="mt-auto flex justify-end">
+                 <span class="text-[10px] font-black text-yellow-500 uppercase tracking-widest group-hover:underline">Acceder interfaz →</span>
+            </div>
         </div>
       </a>
 
-      <a href="/rutinaPersonal" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
-        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
-            <span class="text-3xl group-hover:scale-110 transition-transform">⚡</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Plan de Entrenamiento</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Accede a tu programación técnica personalizada.</p>
-        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Ver mi rutina <span class="ml-2">→</span>
-        </div>
-      </a>
+       {[
+        { href: "/rutinaPersonal", title: "Plan Técnico", icon: "⚡", desc: "Tu programación personalizada." },
+        { href: "/rutinas", title: "Explorar Rutinas", icon: "💪", desc: "Entrenamientos de élite prediseñados." },
+        { href: "/nutricion", title: "Nutrición", icon: "🍎", desc: "Combustible de precisión." },
+        { href: "/medidas", title: "Medidas", icon: "📏", desc: "Evolución de circunferencias." },
+        { href: "/calculadora", title: "Biometría", icon: "📊", desc: "Monitoreo de porcentaje graso." },
+        { href: "/bitacora", title: "Bitácora Pro", icon: "📝", desc: "Registro diario de entrenamiento." },
+        // Añade esto al inicio del array de cards en dashboard.astro
+        { href: "/iaFit", title: "IA Fit Scan", icon: "🤖", desc: "Analiza tus macros con solo una foto." },
+        
+      ].map(card => (
+        <a href={card.href} class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-black to-zinc-900 border-l-[6px] border-red-600/80 shadow-lg hover:shadow-red-600/30 transition-all duration-300 group hover:-translate-y-1">
+            {/* Icono fantasma de fondo */}
+            <div class="absolute -right-6 -bottom-6 text-9xl opacity-[0.07] select-none group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-500 text-red-600">{card.icon}</div>
+            
+            <div class="p-6 relative z-10 h-full flex flex-col">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-black text-white uppercase italic tracking-tighter leading-none min-h-[2.5rem] flex items-center">
+                        {card.title}
+                    </h3>
+                    {/* Icono indicador superior derecho */}
+                    <div class="w-10 h-10 rounded-lg bg-red-600/10 border border-red-600/30 flex items-center justify-center text-xl group-hover:bg-red-600 group-hover:text-white transition-all shadow-[0_0_10px_rgba(220,38,38,0.2)]">
+                        {card.icon}
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs font-medium mb-6 leading-relaxed">{card.desc}</p>
+                
+                <div class="mt-auto flex justify-between items-center opacity-60 group-hover:opacity-100 transition-opacity">
+                    <div class="h-1 w-12 bg-red-600/30 overflow-hidden rounded-full">
+                        <div class="h-full w-full bg-red-600 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
+                    </div>
+                    <span class="text-[9px] font-black text-red-500 uppercase tracking-widest">Activar →</span>
+                </div>
+            </div>
+        </a>
+      ))}
 
-      <a href="/rutinas" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
-        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
-            <span class="text-3xl group-hover:scale-110 transition-transform">💪</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Explorar Rutinas</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Entrenamientos de élite prediseñados.</p>
-        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Entrar ahora <span class="ml-2">→</span>
-        </div>
-      </a>
-
-      <a href="/nutricion" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
-        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
-            <span class="text-3xl group-hover:scale-110 transition-transform">🍎</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Nutrición</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Combustible de precisión para tu recuperación.</p>
-        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Ver dietas <span class="ml-2">→</span>
-        </div>
-      </a>
-
-      <a href="/calculadora" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
-        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
-            <span class="text-3xl group-hover:scale-110 transition-transform">📊</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Biometría</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Monitorea tu porcentaje de grasa.</p>
-        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Analizar <span class="ml-2">→</span>
-        </div>
-      </a>
-
-      <a href="/medidas" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
-        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
-            <span class="text-3xl group-hover:scale-110 transition-transform">📏</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Medidas</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Registra la evolución de tus circunferencias.</p>
-        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Registrar <span class="ml-2">→</span>
-        </div>
-      </a>
-
-      <a href="/bitacora" class="group bg-gray-900/40 border border-red-600/20 p-8 rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_15px_rgba(220,38,38,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.6),0_0_25px_rgba(220,38,38,0.3)] hover:border-red-600/60 transition-all duration-500 hover:-translate-y-2">
-        <div class="w-14 h-14 bg-red-900/20 border border-red-600/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.6)] transition-all duration-500">
-            <span class="text-3xl group-hover:scale-110 transition-transform">📝</span>
-        </div>
-        <h3 class="text-2xl font-black text-white mb-3 uppercase italic tracking-tighter">Bitácora Pro</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Registra tus ejercicios, series y repeticiones diarias.</p>
-        <div class="mt-6 flex items-center text-[10px] font-black text-red-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Registrar entrenamiento <span class="ml-2">→</span>
+      <a href="/coaches" class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-black to-zinc-900 border-l-[6px] border-blue-600 shadow-lg hover:shadow-blue-600/20 transition-all duration-300 group hover:-translate-y-1">
+        <div class="absolute -right-6 -bottom-6 text-9xl opacity-5 select-none group-hover:scale-105 transition-transform duration-500 text-blue-500">🏆</div>
+        <div class="p-6 relative z-10 h-full flex flex-col">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-black text-white uppercase italic tracking-tighter leading-none">Staff de <br>Coaches</h3>
+                <div class="w-10 h-10 rounded-lg bg-blue-600/10 border border-blue-600/30 flex items-center justify-center text-xl text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                    🏆
+                </div>
+            </div>
+            <p class="text-gray-500 text-xs font-medium mb-8 leading-relaxed">Encuentra al mentor perfecto para tu transformación.</p>
+            <div class="mt-auto flex justify-end">
+                 <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest group-hover:underline">Explorar Staff →</span>
+            </div>
         </div>
       </a>
 
@@ -161,7 +154,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  // --- LÓGICA DEL DASHBOARD ---
+  // --- LÓGICA DEL DASHBOARD (Sin cambios funcionales) ---
   const token = localStorage.getItem('token');
   
   if (!token) {
@@ -178,10 +171,14 @@ import Layout from '../layouts/Layout.astro';
 
     // --- LÓGICA DE ROLES PARA COACH ---
     if (user.role && user.role.toLowerCase() === 'coach') {
+        // Usamos display grid/flex para mostrar en lugar de quitar 'hidden' directamente
+        // para mantener el layout del grid
         const adminPanel = document.getElementById('admin-panel-card');
+        if (adminPanel) {
+            adminPanel.classList.remove('hidden');
+            adminPanel.classList.add('flex');
+        }
         const profileCard = document.getElementById('coach-profile-card');
-        
-        if (adminPanel) adminPanel.classList.remove('hidden');
         if (profileCard) profileCard.classList.remove('hidden');
     }
 

@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="IA Fit | Análisis Inteligente">
+  <div class="fixed inset-0 z-0 pointer-events-none bg-[url('/grid-pattern.png')] opacity-[0.03] mix-blend-overlay"></div>
+
+  <div class="relative z-10 max-w-4xl mx-auto px-4 py-8">
+    <header class="mb-10 flex items-center justify-between">
+      <a href="/dashboard" class="text-zinc-500 hover:text-red-500 transition-colors flex items-center gap-2 font-black uppercase italic text-xs">
+        ← Volver al Comando
+      </a>
+      <div class="text-right">
+        <h1 class="text-3xl font-black text-white uppercase italic tracking-tighter">IA <span class="text-red-600">Fit</span> Scan</h1>
+        <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Powered by Google AI</p>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section class="space-y-6">
+        <div id="drop-zone" class="relative group aspect-square rounded-3xl border-2 border-dashed border-zinc-800 bg-zinc-900/40 backdrop-blur-sm flex flex-col items-center justify-center p-8 transition-all hover:border-red-600/50 overflow-hidden">
+          <input type="file" id="file-upload" class="hidden" accept="image/*" />
+          
+          <div id="preview-container" class="absolute inset-0 hidden">
+            <img id="image-preview" class="w-full h-full object-cover opacity-40" />
+          </div>
+
+          <div id="upload-prompt" class="relative z-10 text-center">
+            <div class="w-20 h-20 bg-red-600/10 rounded-2xl flex items-center justify-center text-4xl mb-4 mx-auto border border-red-600/20 group-hover:scale-110 transition-transform">
+              📸
+            </div>
+            <p class="text-white font-black uppercase italic text-sm">Sube tu platillo</p>
+            <p class="text-zinc-500 text-[10px] mt-2 font-medium">JPG, PNG o WEBP</p>
+          </div>
+        </div>
+
+        <button id="analyze-btn" class="w-full py-4 bg-red-600 hover:bg-red-700 disabled:bg-zinc-800 disabled:text-zinc-500 text-white font-black uppercase italic tracking-widest rounded-xl transition-all shadow-[0_10px_20px_-5px_rgba(220,38,38,0.4)] active:scale-95">
+          Iniciar Análisis Profundo
+        </button>
+      </section>
+
+      <section id="results-section" class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 relative overflow-hidden opacity-30">
+        <div id="loading-overlay" class="hidden absolute inset-0 z-20 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center">
+          <div class="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p class="text-xs font-black text-white uppercase animate-pulse">Procesando con IA...</p>
+        </div>
+
+        <h3 class="text-xl font-black text-white uppercase italic mb-6 flex items-center gap-2">
+          <span class="w-2 h-6 bg-red-600 inline-block"></span> Reporte Nutricional
+        </h3>
+
+        <div class="space-y-4">
+          {[
+            { label: 'Peso Estimado', id: 'res-weight', unit: 'g', icon: '⚖️' },
+            { label: 'Calorías Totales', id: 'res-kcal', unit: 'kcal', icon: '🔥' },
+            { label: 'Proteína', id: 'res-prot', unit: 'g', icon: '🍗' },
+            { label: 'Carbohidratos', id: 'res-carb', unit: 'g', icon: '🍝' }
+          ].map(item => (
+            <div class="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-zinc-800/50">
+              <div class="flex items-center gap-3">
+                <span class="text-lg">{item.icon}</span>
+                <span class="text-[10px] font-black text-zinc-400 uppercase tracking-tighter">{item.label}</span>
+              </div>
+              <div class="text-right">
+                <span id={item.id} class="text-xl font-black text-white italic">--</span>
+                <span class="text-[10px] font-bold text-red-600 ml-1">{item.unit}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Obtenemos la URL base desde las variables de entorno de Astro
+  const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+
+  const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+  const dropZone = document.getElementById('drop-zone');
+  const analyzeBtn = document.getElementById('analyze-btn') as HTMLButtonElement;
+  const loading = document.getElementById('loading-overlay');
+  const resultsSection = document.getElementById('results-section');
+  const preview = document.getElementById('image-preview') as HTMLImageElement;
+  const previewContainer = document.getElementById('preview-container');
+
+  // Elementos de resultados
+  const resWeight = document.getElementById('res-weight');
+  const resKcal = document.getElementById('res-kcal');
+  const resProt = document.getElementById('res-prot');
+  const resCarb = document.getElementById('res-carb');
+
+  // Manejo de Preview
+  dropZone?.addEventListener('click', () => fileInput.click());
+
+  fileInput?.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (preview && previewContainer) {
+          preview.src = e.target?.result as string;
+          previewContainer.classList.remove('hidden');
+          resultsSection?.classList.remove('opacity-30');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Lógica de envío REAL al Backend
+  analyzeBtn?.addEventListener('click', async () => {
+    const file = fileInput.files?.[0];
+    
+    if (!file) {
+      alert("Por favor, selecciona una imagen primero.");
+      return;
+    }
+
+    loading?.classList.remove('hidden');
+    analyzeBtn.disabled = true;
+
+    // Preparamos el FormData para el envío de archivos (multipart/form-data)
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/ia/analyze`, {
+        method: 'POST',
+        body: formData,
+        // Nota: No establecemos el Content-Type manualmente, 
+        // el navegador lo hará automáticamente al ver el FormData incluyendo el boundary.
+      });
+
+      if (!response.ok) throw new Error("Error en la comunicación con el servidor");
+
+      const result = await response.json();
+
+      if (result.code === 200) {
+        // Mapeamos los datos de Gemini a la interfaz
+        if (resWeight) resWeight.textContent = result.data.weight;
+        if (resKcal) resKcal.textContent = result.data.kcal;
+        if (resProt) resProt.textContent = result.data.protein;
+        if (resCarb) resCarb.textContent = result.data.carbs;
+      } else {
+        alert("La IA no pudo procesar la imagen: " + result.message);
+      }
+
+    } catch (error) {
+      console.error("Error al analizar:", error);
+      alert("Hubo un fallo en la conexión con el Centro de Comando.");
+    } finally {
+      loading?.classList.add('hidden');
+      analyzeBtn.disabled = false;
+    }
+  });
+</script>
