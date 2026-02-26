@@ -18,11 +18,11 @@ import Layout from '../layouts/Layout.astro';
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <section class="space-y-6">
-        <div id="drop-zone" class="relative group aspect-square rounded-3xl border-2 border-dashed border-zinc-800 bg-zinc-900/40 backdrop-blur-sm flex flex-col items-center justify-center p-8 transition-all hover:border-red-600/50 overflow-hidden">
+        <div id="drop-zone" class="relative group aspect-square rounded-3xl border-2 border-dashed border-zinc-800 bg-zinc-900/40 backdrop-blur-sm flex flex-col items-center justify-center p-8 transition-all hover:border-red-600/50 overflow-hidden cursor-pointer">
           <input type="file" id="file-upload" class="hidden" accept="image/*" />
           
           <div id="preview-container" class="absolute inset-0 hidden">
-            <img id="image-preview" class="w-full h-full object-cover opacity-40" />
+            <img id="image-preview" class="w-full h-full object-cover opacity-60" />
           </div>
 
           <div id="upload-prompt" class="relative z-10 text-center">
@@ -39,10 +39,10 @@ import Layout from '../layouts/Layout.astro';
         </button>
       </section>
 
-      <section id="results-section" class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 relative overflow-hidden opacity-30">
-        <div id="loading-overlay" class="hidden absolute inset-0 z-20 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center">
+      <section id="results-section" class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 relative overflow-hidden opacity-30 transition-opacity duration-500">
+        <div id="loading-overlay" class="hidden absolute inset-0 z-20 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center">
           <div class="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p class="text-xs font-black text-white uppercase animate-pulse">Procesando con IA...</p>
+          <p class="text-xs font-black text-white uppercase animate-pulse tracking-widest">IA Analizando Composición...</p>
         </div>
 
         <h3 class="text-xl font-black text-white uppercase italic mb-6 flex items-center gap-2">
@@ -74,11 +74,11 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-    // Obtenemos la URL base desde las variables de entorno de Astro
-    // En el script de iaFit.astro
-    const API_BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+  // SOLUCIÓN DEFINITIVA: Hardcode de la URL para evitar problemas de variables de entorno en Vercel
+  const API_BASE_URL = 'https://gym-app-backend-2-pv91.onrender.com';
+  const ENDPOINT = `${API_BASE_URL}/analyze`;
 
-    console.log("Conectando a:", API_BASE_URL); // Esto te dirá en la consola si ya no es undefined
+  console.log("Comando IA FIT listo. Objetivo:", ENDPOINT);
 
   const fileInput = document.getElementById('file-upload') as HTMLInputElement;
   const dropZone = document.getElementById('drop-zone');
@@ -87,6 +87,7 @@ import Layout from '../layouts/Layout.astro';
   const resultsSection = document.getElementById('results-section');
   const preview = document.getElementById('image-preview') as HTMLImageElement;
   const previewContainer = document.getElementById('preview-container');
+  const uploadPrompt = document.getElementById('upload-prompt');
 
   // Elementos de resultados
   const resWeight = document.getElementById('res-weight');
@@ -102,9 +103,10 @@ import Layout from '../layouts/Layout.astro';
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        if (preview && previewContainer) {
+        if (preview && previewContainer && uploadPrompt) {
           preview.src = e.target?.result as string;
           previewContainer.classList.remove('hidden');
+          uploadPrompt.classList.add('opacity-0'); // Oculta el texto de "Sube tu platillo"
           resultsSection?.classList.remove('opacity-30');
         }
       };
@@ -112,47 +114,51 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Lógica de envío REAL al Backend
+  // Lógica de envío al Backend de Render
   analyzeBtn?.addEventListener('click', async () => {
     const file = fileInput.files?.[0];
     
     if (!file) {
-      alert("Por favor, selecciona una imagen primero.");
+      alert("Operación cancelada: No se detectó ninguna imagen en el escáner.");
       return;
     }
 
     loading?.classList.remove('hidden');
     analyzeBtn.disabled = true;
 
-    // Preparamos el FormData para el envío de archivos (multipart/form-data)
     const formData = new FormData();
+    // Importante: El nombre 'image' debe coincidir con lo que espera el backend
     formData.append('image', file);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/analyze`, {
+      const response = await fetch(ENDPOINT, {
         method: 'POST',
         body: formData,
-        // Nota: No establecemos el Content-Type manualmente, 
-        // el navegador lo hará automáticamente al ver el FormData incluyendo el boundary.
+        // No añadir headers de Content-Type, el navegador gestiona el multipart/form-data
       });
 
-      if (!response.ok) throw new Error("Error en la comunicación con el servidor");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+      }
 
       const result = await response.json();
 
-      if (result.code === 200) {
-        // Mapeamos los datos de Gemini a la interfaz
-        if (resWeight) resWeight.textContent = result.data.weight;
-        if (resKcal) resKcal.textContent = result.data.kcal;
-        if (resProt) resProt.textContent = result.data.protein;
-        if (resCarb) resCarb.textContent = result.data.carbs;
+      if (result.code === 200 && result.data) {
+        // Actualización de la interfaz con datos reales de Gemini
+        if (resWeight) resWeight.textContent = result.data.weight || '0';
+        if (resKcal) resKcal.textContent = result.data.kcal || '0';
+        if (resProt) resProt.textContent = result.data.protein || '0';
+        if (resCarb) resCarb.textContent = result.data.carbs || '0';
+        
+        console.log("Análisis completado con éxito:", result.data);
       } else {
-        alert("La IA no pudo procesar la imagen: " + result.message);
+        throw new Error(result.message || "La IA no devolvió datos válidos.");
       }
 
     } catch (error) {
-      console.error("Error al analizar:", error);
-      alert("Hubo un fallo en la conexión con el Centro de Comando.");
+      console.error("DEBUG IA FIT ERROR:", error);
+      alert(`ERROR DE CONEXIÓN: ${error.message}`);
     } finally {
       loading?.classList.add('hidden');
       analyzeBtn.disabled = false;
