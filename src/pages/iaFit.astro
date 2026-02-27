@@ -74,91 +74,48 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  // SOLUCIÓN DEFINITIVA: Hardcode de la URL para evitar problemas de variables de entorno en Vercel
   const API_BASE_URL = 'https://gym-app-backend-2-pv91.onrender.com';
   const ENDPOINT = `${API_BASE_URL}/analyze`;
 
-  console.log("Comando IA FIT listo. Objetivo:", ENDPOINT);
-
-  const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-  const dropZone = document.getElementById('drop-zone');
-  const analyzeBtn = document.getElementById('analyze-btn') as HTMLButtonElement;
+  const fileInput = document.getElementById('file-upload');
+  const analyzeBtn = document.getElementById('analyze-btn');
   const loading = document.getElementById('loading-overlay');
-  const resultsSection = document.getElementById('results-section');
-  const preview = document.getElementById('image-preview') as HTMLImageElement;
-  const previewContainer = document.getElementById('preview-container');
-  const uploadPrompt = document.getElementById('upload-prompt');
-
-  // Elementos de resultados
+  
+  // Selectores de resultados
   const resWeight = document.getElementById('res-weight');
   const resKcal = document.getElementById('res-kcal');
   const resProt = document.getElementById('res-prot');
   const resCarb = document.getElementById('res-carb');
 
-  // Manejo de Preview
-  dropZone?.addEventListener('click', () => fileInput.click());
-
-  fileInput?.addEventListener('change', (e) => {
-    const file = (e.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (preview && previewContainer && uploadPrompt) {
-          preview.src = e.target?.result as string;
-          previewContainer.classList.remove('hidden');
-          uploadPrompt.classList.add('opacity-0'); // Oculta el texto de "Sube tu platillo"
-          resultsSection?.classList.remove('opacity-30');
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  // Lógica de envío al Backend de Render
   analyzeBtn?.addEventListener('click', async () => {
     const file = fileInput.files?.[0];
-    
-    if (!file) {
-      alert("Operación cancelada: No se detectó ninguna imagen en el escáner.");
-      return;
-    }
+    if (!file) return alert("Sube una foto primero");
 
     loading?.classList.remove('hidden');
     analyzeBtn.disabled = true;
 
     const formData = new FormData();
-    // Importante: El nombre 'image' debe coincidir con lo que espera el backend
     formData.append('image', file);
 
     try {
       const response = await fetch(ENDPOINT, {
         method: 'POST',
-        body: formData,
-        // No añadir headers de Content-Type, el navegador gestiona el multipart/form-data
+        body: formData
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error del servidor: ${response.status}`);
-      }
 
       const result = await response.json();
 
-      if (result.code === 200 && result.data) {
-        // Actualización de la interfaz con datos reales de Gemini
+      if (response.ok && result.code === 200) {
+        // Mapeo exacto de los campos del backend
         if (resWeight) resWeight.textContent = result.data.weight || '0';
         if (resKcal) resKcal.textContent = result.data.kcal || '0';
         if (resProt) resProt.textContent = result.data.protein || '0';
         if (resCarb) resCarb.textContent = result.data.carbs || '0';
-        
-        console.log("Análisis completado con éxito:", result.data);
       } else {
-        throw new Error(result.message || "La IA no devolvió datos válidos.");
+        throw new Error(result.message || "Error en el servidor");
       }
-
     } catch (error) {
-      console.error("DEBUG IA FIT ERROR:", error);
-      alert(`ERROR DE CONEXIÓN: ${error.message}`);
+      alert(`Error: ${error.message}`);
     } finally {
       loading?.classList.add('hidden');
       analyzeBtn.disabled = false;
