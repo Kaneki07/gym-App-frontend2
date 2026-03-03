@@ -74,28 +74,62 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
+  // Configuración de URL
   const API_BASE_URL = 'https://gym-app-backend-2-pv91.onrender.com';
+  // IMPORTANTE: Asegúrate de que esta ruta coincida exactamente con cómo registraste el plugin en main.js
   const ENDPOINT = `${API_BASE_URL}/analyze`;
 
-  const fileInput = document.getElementById('file-upload');
-  const analyzeBtn = document.getElementById('analyze-btn');
+  // Elementos de la interfaz
+  const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+  const dropZone = document.getElementById('drop-zone');
+  const analyzeBtn = document.getElementById('analyze-btn') as HTMLButtonElement;
   const loading = document.getElementById('loading-overlay');
+  const resultsSection = document.getElementById('results-section');
   
-  // Selectores de resultados
+  // Elementos de previsualización
+  const preview = document.getElementById('image-preview') as HTMLImageElement;
+  const previewContainer = document.getElementById('preview-container');
+  const uploadPrompt = document.getElementById('upload-prompt');
+
+  // Selectores de resultados nutricionales
   const resWeight = document.getElementById('res-weight');
   const resKcal = document.getElementById('res-kcal');
   const resProt = document.getElementById('res-prot');
   const resCarb = document.getElementById('res-carb');
 
+  dropZone?.addEventListener('click', () => fileInput?.click());
+
+  fileInput?.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (preview && previewContainer && uploadPrompt) {
+          preview.src = event.target?.result as string;
+          previewContainer.classList.remove('hidden');
+          uploadPrompt.classList.add('opacity-0');
+          resultsSection?.classList.remove('opacity-30'); 
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
   analyzeBtn?.addEventListener('click', async () => {
     const file = fileInput.files?.[0];
-    if (!file) return alert("Sube una foto primero");
+    
+    if (!file) {
+      alert("⚠️ Por favor, sube o toma una foto del platillo primero.");
+      return;
+    }
 
+    // Activar estado de carga
     loading?.classList.remove('hidden');
     analyzeBtn.disabled = true;
+    analyzeBtn.textContent = "Analizando...";
 
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('image', file); // 'image' es el nombre de campo que espera el backend
 
     try {
       const response = await fetch(ENDPOINT, {
@@ -106,19 +140,24 @@ import Layout from '../layouts/Layout.astro';
       const result = await response.json();
 
       if (response.ok && result.code === 200) {
-        // Mapeo exacto de los campos del backend
+        // Actualizamos los valores en la UI
         if (resWeight) resWeight.textContent = result.data.weight || '0';
         if (resKcal) resKcal.textContent = result.data.kcal || '0';
         if (resProt) resProt.textContent = result.data.protein || '0';
         if (resCarb) resCarb.textContent = result.data.carbs || '0';
+        
+        console.log("✅ Análisis exitoso:", result.data);
       } else {
-        throw new Error(result.message || "Error en el servidor");
+        throw new Error(result.message || "No se pudo procesar la imagen.");
       }
     } catch (error) {
-      alert(`Error: ${error.message}`);
+        console.error("❌ Error en la petición:", error);
+        alert(`Ups, ocurrió un error: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
-      loading?.classList.add('hidden');
-      analyzeBtn.disabled = false;
+        // Restaurar estado visual
+        loading?.classList.add('hidden');
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = "Iniciar Análisis Profundo";
     }
   });
 </script>
